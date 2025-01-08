@@ -8,7 +8,7 @@ export interface User {
 }
 
 export interface UserCreateInput {
-  id?: string
+  id: string
   userName: string
   userMessage?: string
   createdAt?: Date

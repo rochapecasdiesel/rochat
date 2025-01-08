@@ -1,3 +1,4 @@
+import { UserAllreadyExistsError } from '@/services/erros/user-already-exists-error'
 import { makeRegisterUserService } from '@/services/factories/make-register-user-service'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
@@ -10,19 +11,30 @@ export async function userRegisterController(
     userName: z.string(),
     userMessage: z.string().optional(),
     avatarUrl: z.string().optional(),
+    documentId: z.string(),
   })
 
-  const { userName, userMessage, avatarUrl } = registerUserBodoySchema.parse(
-    request.body,
-  )
+  const { userName, userMessage, avatarUrl, documentId } =
+    registerUserBodoySchema.parse(request.body)
 
   const usersRepository = makeRegisterUserService()
 
-  await usersRepository.execute({
-    avatarUrl,
-    userMessage,
-    userName,
-  })
+  try {
+    await usersRepository.execute({
+      avatarUrl,
+      userMessage,
+      userName,
+      documentId,
+    })
+  } catch (err) {
+    if (err instanceof UserAllreadyExistsError) {
+      return reply.status(409).send({
+        message: err.message,
+      })
+    }
+
+    throw err
+  }
 
   return reply.status(201).send()
 }

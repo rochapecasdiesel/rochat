@@ -1,13 +1,12 @@
 import { User, UserCreateInput } from '@/@types/user'
 import { UsersRepository } from '../users-repository'
-import { randomUUID } from 'node:crypto'
 
 export class InMemoryUsersRepository implements UsersRepository {
   public users: User[] = []
 
   async create(data: UserCreateInput) {
     const user = {
-      id: randomUUID(),
+      id: data.id,
       userName: data.userName,
       avatarUrl: data.avatarUrl ?? '',
       createdAt: new Date(),
@@ -15,6 +14,16 @@ export class InMemoryUsersRepository implements UsersRepository {
       userMessage: data.userMessage ?? '',
     }
     this.users.push(user)
+
+    return user
+  }
+
+  async findById(id: string): Promise<User | null> {
+    const user = this.users.find((user) => user.id === id)
+
+    if (!user) {
+      return null
+    }
 
     return user
   }
