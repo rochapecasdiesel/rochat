@@ -6,6 +6,17 @@ const envSchema = z.object({
     .enum(['development', 'test', 'production'])
     .default('development'),
   PORT: z.coerce.number().default(3333),
+  PROJECT_ID: z.string(),
+  PRIVATE_KEY_ID: z.string(),
+  PRIVATE_KEY: z.string(),
+  CLIENT_EMAIL: z.string(),
+  CLIENT_ID: z.string(),
+  AUTH_URI: z.string().url(),
+  TOKEN_URI: z.string().url(),
+  AUTH_PROVIDER_X509_CERT_URL: z.string().url(),
+  CLIENT_X509_CERT_URL: z.string().url(),
+  UNIVERSE_DOMAIN: z.string(),
+  DATABASE: z.enum(['rocha-tech-test']).default('rocha-tech-test'),
 })
 
 const _env = envSchema.safeParse(process.env)

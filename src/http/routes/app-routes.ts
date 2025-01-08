@@ -1,7 +1,8 @@
 import { FastifyInstance } from 'fastify'
+import { userRoutes } from './user.routes'
 
 export async function appRoutes(app: FastifyInstance) {
-  app.get('/hello', async (request, reply) => {
-    return reply.send({ hello: 'world' })
+  app.register(userRoutes, {
+    prefix: '/users',
   })
 }
