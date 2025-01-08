@@ -7,7 +7,7 @@ export async function userRegisterController(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const registerUserBodoySchema = z.object({
+  const registerUserBodySchema = z.object({
     userName: z.string(),
     userMessage: z.string().optional(),
     avatarUrl: z.string().optional(),
@@ -15,7 +15,7 @@ export async function userRegisterController(
   })
 
   const { userName, userMessage, avatarUrl, documentId } =
-    registerUserBodoySchema.parse(request.body)
+    registerUserBodySchema.parse(request.body)
 
   const usersRepository = makeRegisterUserService()
 

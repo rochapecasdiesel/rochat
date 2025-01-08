@@ -1,4 +1,4 @@
-import { User, UserCreateInput } from '@/@types/user'
+import { User, UserCreateInput, UserUpdateInput } from '@/@types/user'
 import { UsersRepository } from '../users-repository'
 
 export class InMemoryUsersRepository implements UsersRepository {
@@ -18,12 +18,26 @@ export class InMemoryUsersRepository implements UsersRepository {
     return user
   }
 
-  async findById(id: string): Promise<User | null> {
+  async findById(id: string) {
     const user = this.users.find((user) => user.id === id)
 
     if (!user) {
       return null
     }
+
+    return user
+  }
+
+  async update(id: string, data: UserUpdateInput) {
+    const indexOfUser = this.users.findIndex((user) => user.id === id)
+
+    const userData = this.users[indexOfUser]
+
+    const user = (this.users[indexOfUser] = {
+      ...userData,
+      ...data,
+      updatedAt: new Date(),
+    })
 
     return user
   }

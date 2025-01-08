@@ -1,6 +1,6 @@
 import { db } from '@/lib/firebase'
 import { UsersRepository } from '../users-repository'
-import { User, UserCreateInput } from '@/@types/user'
+import { User, UserCreateInput, UserUpdateInput } from '@/@types/user'
 
 export class FirebaseUsersRepository implements UsersRepository {
   private usersCollection = db.collection('users')
@@ -49,5 +49,32 @@ export class FirebaseUsersRepository implements UsersRepository {
     }
 
     return user
+  }
+
+  async update(id: string, data: UserUpdateInput): Promise<User> {
+    // Referência ao documento com o ID fornecido
+    const userRef = this.usersCollection.doc(id)
+
+    // Remove campos com valores `undefined`
+    const sanitizedData = Object.fromEntries(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      Object.entries(data).filter(([_, value]) => value !== undefined),
+    )
+
+    // Atualiza os dados no Firestore
+    await userRef.update({
+      ...sanitizedData,
+      updatedAt: new Date(), // Atualiza o campo de modificação
+    })
+
+    // Obtém os dados atualizados para retornar ao usuário
+    const updatedSnapshot = await userRef.get()
+
+    const updatedData = updatedSnapshot.data()
+
+    return {
+      id,
+      ...updatedData,
+    } as User
   }
 }
