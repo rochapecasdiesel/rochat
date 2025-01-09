@@ -4,5 +4,5 @@ import { userUpdateController } from '../controllers/users/user-update.controlle
 
 export async function userRoutes(app: FastifyInstance) {
   app.post('/', userRegisterController)
-  app.patch('/:id', userUpdateController)
+  app.patch('/', userUpdateController)
 }

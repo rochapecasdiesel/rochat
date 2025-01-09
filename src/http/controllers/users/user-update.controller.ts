@@ -13,20 +13,14 @@ export async function userUpdateController(
     avatarUrl: z.string().optional(),
   })
 
-  const updateUserParams = z.object({
-    id: z.string(),
-  })
-
   const { userName, userMessage, avatarUrl } = updateUserBodySchema.parse(
     request.body,
   )
 
-  const { id } = updateUserParams.parse(request.params)
-
   const usersRepository = makeUpdateUserService()
 
   try {
-    await usersRepository.execute(id, {
+    await usersRepository.execute(request.user.sub, {
       avatarUrl,
       userMessage,
       userName,
