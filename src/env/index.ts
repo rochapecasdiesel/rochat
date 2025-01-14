@@ -18,7 +18,6 @@ const envSchema = z.object({
   CLIENT_X509_CERT_URL: z.string().url(),
   UNIVERSE_DOMAIN: z.string(),
   DATABASE: z.enum(['rocha-tech-test']).default('rocha-tech-test'),
-  TEST_TYPE: z.enum(['e2e', 'unit']).default('e2e'),
 })
 
 const _env = envSchema.safeParse(process.env)

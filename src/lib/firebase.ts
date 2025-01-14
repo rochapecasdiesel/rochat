@@ -24,7 +24,7 @@ export const app = initializeApp({
 export const db = getFirestore(app, env.DATABASE)
 
 // Conecte-se ao emulador no ambiente local
-if (env.TEST_TYPE === 'e2e') {
+if (env.NODE_ENV === 'test') {
   db.settings({
     host: 'localhost:8081', // Porta do Firestore emulador
     ssl: false,
