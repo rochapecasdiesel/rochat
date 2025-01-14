@@ -2,7 +2,7 @@ import { env } from '@/env'
 import { initializeApp, cert, ServiceAccount } from 'firebase-admin/app'
 import { getFirestore } from 'firebase-admin/firestore'
 
-const serviceAccount = {
+export const serviceAccount = {
   type: 'service_account',
   project_id: env.PROJECT_ID,
   private_key_id: env.PRIVATE_KEY_ID,
@@ -16,16 +16,17 @@ const serviceAccount = {
   universe_domain: env.UNIVERSE_DOMAIN,
 } as ServiceAccount
 
-const app = initializeApp({
+export const app = initializeApp({
   credential: cert(serviceAccount),
+  projectId: env.PROJECT_ID,
 })
 
 export const db = getFirestore(app, env.DATABASE)
 
 // Conecte-se ao emulador no ambiente local
-if (process.env.NODE_ENV === 'development') {
+if (env.TEST_TYPE === 'e2e') {
   db.settings({
-    host: 'localhost:8080', // Porta do Firestore emulador
+    host: 'localhost:8081', // Porta do Firestore emulador
     ssl: false,
   })
 }

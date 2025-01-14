@@ -1,7 +1,34 @@
-import { describe, expect, it, test } from 'vitest'
+import { app } from '@/app'
+import { clearFireStore } from '@/utils/clearFireStore'
+import { generateFakeJwt } from '@/utils/generate-fake-jwt'
 
-describe('test', () => {
-  it('testt', () => {
-    expect(2 + 2).toEqual(4)
+import request from 'supertest'
+
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+
+describe('Register Controller (e2e)', () => {
+  beforeAll(async () => {
+    await app.ready()
+    await clearFireStore()
+  })
+
+  afterAll(async () => {
+    await app.close()
+  })
+
+  it('should be able to register', async () => {
+    const token = generateFakeJwt({ sub: '000076' })
+
+    const response = await request(app.server)
+      .post('/users')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        userName: 'John Doe',
+        userMessage: 'johndoe@example.com',
+        avatarUrl: '123456',
+        documentId: '000076',
+      })
+
+    expect(response.statusCode).toBe(201)
   })
 })
