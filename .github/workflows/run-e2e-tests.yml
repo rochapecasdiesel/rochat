@@ -46,3 +46,4 @@ jobs:
         env:
           JWT_SECRET: testing
           DATABASE_URL: "rocha-tech-test"
+          PROJECT_ID : "teste"
