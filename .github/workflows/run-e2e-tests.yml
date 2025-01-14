@@ -27,7 +27,11 @@ jobs:
       - run: npm ci
       
       # Iniciar emuladores do Firebase
-      - run: npm run test:emulators &
+      - run: npm run test:emulators
+        env:
+          JWT_SECRET: testing
+          DATABASE_URL: "rocha-tech-test"
+          PROJECT_ID: "rocha-pecas-diesel"
       
       # Executar os testes E2E
       - run: npm run test:e2e
