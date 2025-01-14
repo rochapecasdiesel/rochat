@@ -8,7 +8,11 @@
     "start": "node build/server.js",
     "build": "tsup src --out-dir build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:create-firebase-environment": "npm link ./vitest-environment",
+    "test:install-firebase-environment": "npm link vitest-environment",
+    "pretest:e2e": "run-s test:create-firebase-environment test:install-firebase-environment",
+    "test:e2e": "vitest run --dir src/http"
   },
   "keywords": [],
   "author": "",
@@ -18,12 +22,15 @@
     "dotenv": "^16.4.7",
     "fastify": "^5.2.1",
     "firebase-admin": "13.0.2",
+    "firebase-tools": "13.29.1",
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "4.0.1",
     "@rocketseat/eslint-config": "^2.2.2",
     "@types/node": "^22.10.5",
     "eslint": "^8.57.1",
+    "npm-run-all": "4.1.5",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
