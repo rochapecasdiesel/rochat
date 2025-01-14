@@ -18,13 +18,18 @@ export default <Environment>{
       },
     })
 
-    // Limpa o banco antes dos testes
-    await testEnv.clearFirestore()
+    // Verifique se é um teste E2E e, se for, limpe o banco
+    if (process.env.TEST_TYPE === 'e2e') {
+      await testEnv.clearFirestore()
+    }
 
     return {
       teardown() {
         console.log('Finalizando ambiente Firebase para testes')
-        return testEnv.cleanup() // Libera recursos usados no ambiente
+
+        if (process.env.TEST_TYPE === 'e2e') {
+          return testEnv.cleanup()
+        }
       },
     }
   },

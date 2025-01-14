@@ -5,6 +5,6 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
     environmentMatchGlobs: [['src/http/controllers/**', 'vitest-environment']],
-    dir: 'src/http', // Essa linha
+    dir: 'src', // Essa linha
   },
 })
