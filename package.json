@@ -12,6 +12,7 @@
     "test:create-firebase-environment": "npm link ./vitest-environment",
     "test:install-firebase-environment": "npm link vitest-environment",
     "pretest:e2e": "run-s test:create-firebase-environment test:install-firebase-environment",
+    "test:emulators": "npx firebase emulators:start",
     "test:e2e": "vitest run --dir src/http"
   },
   "keywords": [],
