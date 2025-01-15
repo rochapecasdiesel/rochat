@@ -3,6 +3,8 @@ import { UsersRepository } from '@/repositories/users-repository'
 import { Chat, Messages } from '@/@types/chat'
 import { ChatAlreadyExist } from '../erros/chat-already-exist-error'
 import { ResourceNotFoundError } from '../erros/resource-not-found-error'
+import { UserChat } from '@/@types/user'
+import { ParticipantsWithSameId } from '../erros/participants-with-same-id'
 
 interface CreateChatServiceRequest {
   id?: string
@@ -43,14 +45,25 @@ export class CreateChatService {
       ),
     )
 
+    // Se algum participante não existir retorna um erro
     if (participantsInDB.some((participant) => participant === null)) {
       throw new ResourceNotFoundError()
+    }
+
+    const areAllParticipantsEqual = participantsInDB.every(
+      (participant) => participant === participantsInDB[0],
+    )
+
+    // Se caso todos participantes foram iguais, deve se retornar um erro
+    if (participantsInDB.length > 1 && areAllParticipantsEqual) {
+      throw new ParticipantsWithSameId()
     }
 
     const isChatExist = await this.chatRepository.findByParticipants(
       participantsInDB.map((participant) => participant!.id),
     )
 
+    // Se já existir um chat deve se retornar um erro
     if (isChatExist) {
       throw new ChatAlreadyExist()
     }
@@ -66,6 +79,26 @@ export class CreateChatService {
       lastTimestamp,
       messages,
     })
+
+    await Promise.all(
+      participantsInDB.map(async (participant) => {
+        if (participant) {
+          const updatedUserChats = [
+            ...(participant.userChats || []),
+            {
+              assignedUser: assingnedUser,
+              lastMessage,
+              lastTimestamp,
+              participantId: participants,
+            },
+          ] as UserChat[]
+
+          await this.usersRepository.update(participant.id, {
+            userChats: updatedUserChats,
+          })
+        }
+      }),
+    )
 
     return { chat }
   }
