@@ -2,7 +2,7 @@ import { InMemoryChatRepository } from '@/repositories/in-memory-repository/in-m
 import { describe, beforeEach, it, expect } from 'vitest'
 import { InMemoryUsersRepository } from '@/repositories/in-memory-repository/in-memory-users-repository'
 import { CreateMessageService } from './create-message.service'
-import { createMultipleUsers } from './testUtilityFunctions'
+import { createMultipleUsers } from '../../utils/testUtilityFunctions'
 
 let chatRepository: InMemoryChatRepository
 let usersRepository: InMemoryUsersRepository
