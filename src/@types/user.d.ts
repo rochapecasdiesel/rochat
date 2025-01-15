@@ -1,7 +1,8 @@
 interface UserChat {
   participantId: string[]
   lastMessage: string
-  lastTimestamp: string
+  chatId: string
+  lastTimestamp: Date
   assignedUser: 'assigned' | 'open'
 }
 

@@ -1,11 +1,16 @@
-import { Chat, ChatCreateInput } from '@/@types/chat'
+import {
+  Chat,
+  ChatCreateInput,
+  Messages,
+  MessagesCreateInput,
+} from '@/@types/chat'
 import { ChatRepository } from '../chat-repository'
 import { randomUUID } from 'node:crypto'
 
 export class InMemoryChatRepository implements ChatRepository {
   public chats: Chat[] = []
 
-  async create(data: ChatCreateInput): Promise<Chat> {
+  async create(data: ChatCreateInput) {
     const chat: ChatCreateInput = {
       ...data,
       id: data.id ? data.id : randomUUID(),
@@ -15,7 +20,7 @@ export class InMemoryChatRepository implements ChatRepository {
     return chat as Chat
   }
 
-  async findByParticipants(participants: string[]): Promise<Chat | null> {
+  async findByParticipants(participants: string[]) {
     return (
       this.chats.find(
         (chat) =>
@@ -23,9 +28,39 @@ export class InMemoryChatRepository implements ChatRepository {
           chat.participants.includes(participants[1]),
       ) || null
     )
+  }
 
-    // async findById(id: string): Promise<Chat | null> {
-    //   return this.chats.find(chat => chat.id === id) || null
-    // }
+  async findById(id: string) {
+    const chat = this.chats.find((chat) => chat.id === id)
+
+    if (!chat) {
+      return null
+    }
+
+    return chat
+  }
+
+  async createMessagem(chatId: string, data: MessagesCreateInput) {
+    const index = this.chats.findIndex((chat) => chat.id === chatId)
+
+    // Criação da nova mensagem
+    const message = {
+      ...data,
+      id: data?.id ? data.id : randomUUID(),
+      createAt: new Date(),
+    } as Messages
+
+    // Verifica se o chat existe e se messages é um array
+    if (index > -1) {
+      // Garantir que messages seja um array
+      if (!Array.isArray(this.chats[index].messages)) {
+        this.chats[index].messages = [] // Inicializa como array vazio, caso contrário
+      }
+
+      // Adiciona a nova mensagem
+      this.chats[index].messages.push(message)
+    }
+
+    return message
   }
 }
