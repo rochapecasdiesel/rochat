@@ -2,25 +2,11 @@ import { InMemoryChatRepository } from '@/repositories/in-memory-repository/in-m
 import { describe, beforeEach, it, expect } from 'vitest'
 import { InMemoryUsersRepository } from '@/repositories/in-memory-repository/in-memory-users-repository'
 import { CreateMessageService } from './create-message.service'
+import { createMultipleUsers } from './testUtilityFunctions'
 
 let chatRepository: InMemoryChatRepository
 let usersRepository: InMemoryUsersRepository
 let sut: CreateMessageService
-
-export async function createMultipleUsers(
-  usersRepository: InMemoryUsersRepository,
-  userCount: number,
-) {
-  for (let i = 1; i <= userCount; i++) {
-    const user = {
-      id: String(100000 + i), // Gera um ID único
-      userName: `User${i}`,
-      avatarUrl: `http://example.com/avatar${i}.jpg`,
-      userMessage: `Hello from User${i}!`,
-    }
-    await usersRepository.create(user)
-  }
-}
 
 describe('Create Message Service', () => {
   beforeEach(async () => {
