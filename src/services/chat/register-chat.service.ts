@@ -87,9 +87,10 @@ export class CreateChatService {
             ...(participant.userChats || []),
             {
               assignedUser: assingnedUser,
-              lastMessage,
-              lastTimestamp,
+              lastMessage: '',
+              lastTimestamp: null,
               participantId: participants,
+              chatId: chat.id,
             },
           ] as UserChat[]
 

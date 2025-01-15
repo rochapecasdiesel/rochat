@@ -9,20 +9,22 @@ export interface Messages {
   senderId: string
   recieverId: string
   text: string
-  timestamp: Date
   source: 'internal' | 'external'
+  createAt: Date
+  updatedAt: Date
   deleted: boolean
   altered: boolean
-  alterations: Alterations[]
+  alterations?: Alterations[]
 }
 
 export interface MessagesCreateInput {
-  id: string
+  id?: string
   senderId: string
   recieverId: string
   text: string
-  timestamp: Date
   source: 'internal' | 'external'
+  createAt?: Date
+  updatedAt?: Date
   deleted: boolean
   altered: boolean
   alterations?: Alterations[]
