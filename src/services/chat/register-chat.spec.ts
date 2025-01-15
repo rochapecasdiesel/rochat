@@ -84,4 +84,14 @@ describe('Register chat Service', () => {
       }),
     ).rejects.toBeInstanceOf(ChatAlreadyExist)
   })
+
+  it('should not be able to register a chat whit someone that doesnt exists', async () => {
+    await expect(() =>
+      sut.execute({
+        assingnedUser: 'John Doe',
+        participants: ['000075', '000077'],
+        status: 'open',
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError)
+  })
 })
