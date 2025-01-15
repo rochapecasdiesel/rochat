@@ -40,6 +40,14 @@ export class CreateMessageService {
       throw new ResourceNotFoundError()
     }
 
+    const hasValidParticipants = isChatAllreadyExists.participants.every(
+      (value) => [senderId, recieverId].includes(value),
+    )
+
+    if (!hasValidParticipants) {
+      throw new ResourceNotFoundError()
+    }
+
     // Criação da mensagem
     const message = await this.chatRepository.createMessagem(chatId, {
       altered,

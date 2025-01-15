@@ -2,6 +2,7 @@ import { InMemoryChatRepository } from '@/repositories/in-memory-repository/in-m
 import { describe, beforeEach, it, expect } from 'vitest'
 import { InMemoryUsersRepository } from '@/repositories/in-memory-repository/in-memory-users-repository'
 import { CreateMessageService } from './create-message.service'
+import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 
 let chatRepository: InMemoryChatRepository
 let usersRepository: InMemoryUsersRepository
@@ -62,5 +63,39 @@ describe('Create Message Service', () => {
         lastMessage: message.text,
       }),
     ])
+  })
+
+  it('should not be able to create a new message if receiverId or senderId does not exist', async () => {
+    const chatResponse = await chatRepository.create({
+      assingnedUser: 'John Doe',
+      participants: ['000075', '000076'],
+      status: 'open',
+    })
+
+    await expect(() =>
+      sut.execute({
+        chatId: chatResponse.id,
+        altered: false,
+        deleted: false,
+        recieverId: '000075',
+        senderId: '000077',
+        source: 'internal',
+        text: 'Hello World!!',
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError)
+  })
+
+  it('should not be able to create a new message if the chat does not exist', async () => {
+    await expect(() =>
+      sut.execute({
+        chatId: 'test',
+        altered: false,
+        deleted: false,
+        recieverId: '000075',
+        senderId: '000076',
+        source: 'internal',
+        text: 'Hello World!!',
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })
 })
