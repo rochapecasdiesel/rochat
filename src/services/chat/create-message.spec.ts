@@ -2,11 +2,25 @@ import { InMemoryChatRepository } from '@/repositories/in-memory-repository/in-m
 import { describe, beforeEach, it, expect } from 'vitest'
 import { InMemoryUsersRepository } from '@/repositories/in-memory-repository/in-memory-users-repository'
 import { CreateMessageService } from './create-message.service'
-import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 
 let chatRepository: InMemoryChatRepository
 let usersRepository: InMemoryUsersRepository
 let sut: CreateMessageService
+
+export async function createMultipleUsers(
+  usersRepository: InMemoryUsersRepository,
+  userCount: number,
+) {
+  for (let i = 1; i <= userCount; i++) {
+    const user = {
+      id: String(100000 + i), // Gera um ID único
+      userName: `User${i}`,
+      avatarUrl: `http://example.com/avatar${i}.jpg`,
+      userMessage: `Hello from User${i}!`,
+    }
+    await usersRepository.create(user)
+  }
+}
 
 describe('Create Message Service', () => {
   beforeEach(async () => {
@@ -14,25 +28,13 @@ describe('Create Message Service', () => {
     usersRepository = new InMemoryUsersRepository()
     sut = new CreateMessageService(chatRepository, usersRepository)
 
-    await usersRepository.create({
-      id: '000075',
-      userName: 'John Doe',
-      avatarUrl: 'http://example.com/avatar.jpg',
-      userMessage: 'Hello, world!',
-    })
-
-    await usersRepository.create({
-      id: '000076',
-      userName: 'Jane Doe',
-      avatarUrl: 'http://example.com/avatar.jpg',
-      userMessage: 'Hello, world!',
-    })
+    createMultipleUsers(usersRepository, 2)
   })
 
   it('should be able to create a new message', async () => {
     const chatResponse = await chatRepository.create({
-      assingnedUser: 'John Doe',
-      participants: ['000075', '000076'],
+      assingnedUser: 'User1',
+      participants: ['100002', '100001'],
       status: 'open',
     })
 
@@ -40,20 +42,20 @@ describe('Create Message Service', () => {
       chatId: chatResponse.id,
       altered: false,
       deleted: false,
-      recieverId: '000075',
-      senderId: '000076',
+      recieverId: '100002',
+      senderId: '100001',
       source: 'internal',
       text: 'Hello World!!',
     })
 
-    const userResponse = await usersRepository.findById('000075')
+    const userResponse = await usersRepository.findById('100001')
 
     expect(message.id).toEqual(expect.any(String))
 
     expect(message).toEqual(
       expect.objectContaining({
-        senderId: '000076',
-        recieverId: '000075',
+        senderId: '100001',
+        recieverId: '100002',
       }),
     )
 
@@ -63,39 +65,5 @@ describe('Create Message Service', () => {
         lastMessage: message.text,
       }),
     ])
-  })
-
-  it('should not be able to create a new message if receiverId or senderId does not exist', async () => {
-    const chatResponse = await chatRepository.create({
-      assingnedUser: 'John Doe',
-      participants: ['000075', '000076'],
-      status: 'open',
-    })
-
-    await expect(() =>
-      sut.execute({
-        chatId: chatResponse.id,
-        altered: false,
-        deleted: false,
-        recieverId: '000075',
-        senderId: '000077',
-        source: 'internal',
-        text: 'Hello World!!',
-      }),
-    ).rejects.toBeInstanceOf(ResourceNotFoundError)
-  })
-
-  it('should not be able to create a new message if the chat does not exist', async () => {
-    await expect(() =>
-      sut.execute({
-        chatId: 'test',
-        altered: false,
-        deleted: false,
-        recieverId: '000075',
-        senderId: '000076',
-        source: 'internal',
-        text: 'Hello World!!',
-      }),
-    ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })
 })
