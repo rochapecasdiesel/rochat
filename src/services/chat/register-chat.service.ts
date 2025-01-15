@@ -1,6 +1,8 @@
 import { ChatRepository } from '@/repositories/chat-repository'
+import { UsersRepository } from '@/repositories/users-repository'
 import { Chat, Messages } from '@/@types/chat'
 import { ChatAlreadyExist } from '../erros/chat-already-exist-error'
+import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 
 interface CreateChatServiceRequest {
   id?: string
@@ -19,7 +21,10 @@ interface CreateChatServiceResponse {
 }
 
 export class CreateChatService {
-  constructor(private chatRepository: ChatRepository) {}
+  constructor(
+    private chatRepository: ChatRepository,
+    private usersRepository: UsersRepository,
+  ) {}
 
   async execute({
     id,
@@ -32,8 +37,19 @@ export class CreateChatService {
     lastTimestamp,
     messages,
   }: CreateChatServiceRequest): Promise<CreateChatServiceResponse> {
-    const isChatExist =
-      await this.chatRepository.findByParticipants(participants)
+    const participantsInDB = await Promise.all(
+      participants.map((participantId) =>
+        this.usersRepository.findById(participantId),
+      ),
+    )
+
+    if (participantsInDB.some((participant) => participant === null)) {
+      throw new ResourceNotFoundError()
+    }
+
+    const isChatExist = await this.chatRepository.findByParticipants(
+      participantsInDB.map((participant) => participant!.id),
+    )
 
     if (isChatExist) {
       throw new ChatAlreadyExist()
