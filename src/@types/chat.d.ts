@@ -35,16 +35,20 @@ export interface Chat {
   participants: string[]
   assingnedUser: string
   status: 'assigned' | 'open'
+  createAt: Date
+  updatedAt: Date
   lastMessage: string
   lastTimestamp: Date
   messages: Messages[]
 }
 
 export interface ChatCreateInput {
-  id: string
+  id?: string
   participants: string[]
   assingnedUser: string
   status: 'assigned' | 'open'
+  createAt?: Date
+  updatedAt?: Date
   lastMessage?: string
   lastTimestamp?: Date
   messages?: Messages[]
