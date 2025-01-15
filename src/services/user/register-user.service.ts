@@ -1,6 +1,6 @@
 import { User } from '@/@types/user'
 import { UsersRepository } from '@/repositories/users-repository'
-import { UserAllreadyExistsError } from './erros/user-already-exists-error'
+import { UserAllreadyExistsError } from '../erros/user-already-exists-error'
 
 interface RegisterUserServiceRequest {
   userName: string

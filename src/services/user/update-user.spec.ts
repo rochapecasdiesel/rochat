@@ -1,8 +1,8 @@
-import { beforeEach, describe, expect, it } from 'vitest'
 import { UsersRepository } from '@/repositories/users-repository'
-import { InMemoryUsersRepository } from '@/repositories/in-memory-repository/in-memory-users-repository'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { UpdateUserService } from './update-user.service'
-import { ResourceNotFoundError } from './erros/resource-not-found-error'
+import { InMemoryUsersRepository } from '@/repositories/in-memory-repository/in-memory-users-repository'
+import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 
 let userRepository: UsersRepository
 let sut: UpdateUserService

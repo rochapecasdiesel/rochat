@@ -1,6 +1,6 @@
 import { User, UserUpdateInput } from '@/@types/user'
 import { UsersRepository } from '@/repositories/users-repository'
-import { ResourceNotFoundError } from './erros/resource-not-found-error'
+import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 
 interface UpdateUserServiceRequest extends UserUpdateInput {}
 

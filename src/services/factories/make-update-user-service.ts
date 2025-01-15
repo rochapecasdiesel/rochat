@@ -1,5 +1,5 @@
 import { FirebaseUsersRepository } from '@/repositories/firebase-repository/firebase-users-repository'
-import { UpdateUserService } from '../update-user.service'
+import { UpdateUserService } from '../user/update-user.service'
 
 export function makeUpdateUserService() {
   const usersRepository = new FirebaseUsersRepository()

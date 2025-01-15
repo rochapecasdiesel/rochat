@@ -22,7 +22,7 @@ export interface UserCreateInput {
   createdAt?: Date
   updatedAt?: Date
   avatarUrl?: string
-  userChats: UserChat[]
+  userChats?: UserChat[]
 }
 
 export interface UserUpdateInput extends Partial<User> {}

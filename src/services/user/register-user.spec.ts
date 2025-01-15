@@ -1,8 +1,8 @@
+import { UsersRepository } from '@/repositories/users-repository'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { RegisterUserService } from './register-user.service'
-import { UsersRepository } from '@/repositories/users-repository'
 import { InMemoryUsersRepository } from '@/repositories/in-memory-repository/in-memory-users-repository'
-import { UserAllreadyExistsError } from './erros/user-already-exists-error'
+import { UserAllreadyExistsError } from '../erros/user-already-exists-error'
 
 let userRepository: UsersRepository
 let sut: RegisterUserService

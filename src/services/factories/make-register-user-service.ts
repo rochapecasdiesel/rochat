@@ -1,5 +1,5 @@
 import { FirebaseUsersRepository } from '@/repositories/firebase-repository/firebase-users-repository'
-import { RegisterUserService } from '../register-user.service'
+import { RegisterUserService } from '../user/register-user.service'
 
 export function makeRegisterUserService() {
   const usersRepository = new FirebaseUsersRepository()
