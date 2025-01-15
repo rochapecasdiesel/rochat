@@ -3,6 +3,7 @@ import { describe, beforeEach, it, expect } from 'vitest'
 import { CreateChatService } from './register-chat.service'
 import { ChatAlreadyExist } from '../erros/chat-already-exist-error'
 import { InMemoryUsersRepository } from '@/repositories/in-memory-repository/in-memory-users-repository'
+import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 
 let chatRepository: InMemoryChatRepository
 let usersRepository: InMemoryUsersRepository
@@ -38,19 +39,29 @@ describe('Register chat Service', () => {
     expect(chat.participants).toHaveLength(2)
   })
 
-  it.skip('should not be able to register a chat that already exists', async () => {
+  it('should not be able to register a chat that already exists', async () => {
     await sut.execute({
       assingnedUser: 'John Doe',
-      participants: ['John Doe', 'Jane Doe'],
+      participants: ['000075', '000076'],
       status: 'open',
     })
 
     await expect(() =>
       sut.execute({
         assingnedUser: 'John Doe',
-        participants: ['John Doe', 'Jane Doe'],
+        participants: ['000075', '000076'],
         status: 'open',
       }),
     ).rejects.toBeInstanceOf(ChatAlreadyExist)
+  })
+
+  it('should not be able to register a chat whit someone that doesnt exists', async () => {
+    await expect(() =>
+      sut.execute({
+        assingnedUser: 'John Doe',
+        participants: ['000075', '000077'],
+        status: 'open',
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })
 })
