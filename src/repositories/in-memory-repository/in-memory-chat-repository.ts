@@ -63,4 +63,14 @@ export class InMemoryChatRepository implements ChatRepository {
 
     return message
   }
+
+  async getMessages(chatId: string, page: number) {
+    const chat = this.chats.find((item) => item.id === chatId)
+
+    if (!chat) {
+      return []
+    }
+
+    return chat?.messages ? chat.messages.slice((page - 1) * 50, page * 50) : []
+  }
 }

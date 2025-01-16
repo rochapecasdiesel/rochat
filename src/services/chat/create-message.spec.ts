@@ -3,6 +3,7 @@ import { describe, beforeEach, it, expect } from 'vitest'
 import { InMemoryUsersRepository } from '@/repositories/in-memory-repository/in-memory-users-repository'
 import { CreateMessageService } from './create-message.service'
 import { createMultipleUsers } from '../../utils/testUtilityFunctions'
+import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 
 let chatRepository: InMemoryChatRepository
 let usersRepository: InMemoryUsersRepository
@@ -14,16 +15,19 @@ describe('Create Message Service', () => {
     usersRepository = new InMemoryUsersRepository()
     sut = new CreateMessageService(chatRepository, usersRepository)
 
-    createMultipleUsers(usersRepository, 2)
+    // Cria dois usuários para os testes
+    await createMultipleUsers(usersRepository, 2)
   })
 
   it('should be able to create a new message', async () => {
+    // Cria um chat para os testes
     const chatResponse = await chatRepository.create({
       assingnedUser: 'User1',
       participants: ['100002', '100001'],
       status: 'open',
     })
 
+    // Executa o serviço para criar uma mensagem
     const { message } = await sut.execute({
       chatId: chatResponse.id,
       altered: false,
@@ -34,22 +38,70 @@ describe('Create Message Service', () => {
       text: 'Hello World!!',
     })
 
-    const userResponse = await usersRepository.findById('100001')
-
-    expect(message.id).toEqual(expect.any(String))
-
+    // Verifica se a mensagem foi criada corretamente
     expect(message).toEqual(
       expect.objectContaining({
         senderId: '100001',
         recieverId: '100002',
+        text: 'Hello World!!',
+        altered: false,
+        deleted: false,
       }),
     )
 
-    expect(userResponse?.userChats).toEqual([
+    // Verifica se os chats dos participantes foram atualizados corretamente
+    const sender = await usersRepository.findById('100001')
+    const receiver = await usersRepository.findById('100002')
+
+    expect(sender?.userChats).toEqual([
       expect.objectContaining({
         chatId: chatResponse.id,
         lastMessage: message.text,
+        lastTimestamp: message.createAt,
       }),
     ])
+
+    expect(receiver?.userChats).toEqual([
+      expect.objectContaining({
+        chatId: chatResponse.id,
+        lastMessage: message.text,
+        lastTimestamp: message.createAt,
+      }),
+    ])
+  })
+
+  it('should throw an error if the chat does not exist', async () => {
+    await expect(
+      sut.execute({
+        chatId: 'nonexistent-chat-id',
+        altered: false,
+        deleted: false,
+        recieverId: '100002',
+        senderId: '100001',
+        source: 'internal',
+        text: 'This will fail',
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError)
+  })
+
+  it('should throw an error if participants are invalid', async () => {
+    // Cria um chat com participantes diferentes
+    const chatResponse = await chatRepository.create({
+      assingnedUser: 'User1',
+      participants: ['100003', '100004'], // Participantes diferentes
+      status: 'open',
+    })
+
+    await expect(
+      sut.execute({
+        chatId: chatResponse.id,
+        altered: false,
+        deleted: false,
+        recieverId: '100002',
+        senderId: '100001',
+        source: 'internal',
+        text: 'Invalid participants',
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })
 })
