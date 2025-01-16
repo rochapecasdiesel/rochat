@@ -28,6 +28,22 @@ export class InMemoryUsersRepository implements UsersRepository {
     return user
   }
 
+  async findManyByName(name: string) {
+    const users = this.users.filter((user) =>
+      user.userName.toLowerCase().includes(name.toLowerCase()),
+    )
+
+    if (users.length === 0) {
+      return null
+    }
+
+    if (!users) {
+      return null
+    }
+
+    return users
+  }
+
   async update(id: string, data: UserUpdateInput) {
     const indexOfUser = this.users.findIndex((user) => user.id === id)
 
