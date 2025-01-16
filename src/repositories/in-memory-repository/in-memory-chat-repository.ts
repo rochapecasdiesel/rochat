@@ -99,25 +99,30 @@ export class InMemoryChatRepository implements ChatRepository {
       )
     }
 
-    // Atualiza os dados da mensagem
+    // Recupera a mensagem original
+    const originalMessage = chat.messages[messageIndex]
+
+    // Atualiza os dados da mensagem com o novo texto ou dados
     const updatedMessage = {
-      ...chat.messages[messageIndex],
-      ...data,
+      ...originalMessage, // Mantém os dados originais
+      ...data, // Aplica as alterações
       updatedAt: new Date(), // Atualiza o timestamp
     }
 
-    // Substitui a mensagem pelo valor atualizado
-    chat.messages[messageIndex] = updatedMessage
-
-    if (!chat.messages[messageIndex].alterations) {
-      chat.messages[messageIndex].alterations = []
+    // Se não houver um campo de alterações, cria um array vazio
+    if (!updatedMessage.alterations) {
+      updatedMessage.alterations = []
     }
 
-    chat.messages[messageIndex].alterations.push({
+    // Adiciona a alteração ao histórico
+    updatedMessage.alterations.push({
       id: randomUUID(),
-      originalMessage: chat.messages[messageIndex].text,
+      originalMessage: originalMessage.text, // Mantém a mensagem original
       timestamp: new Date(),
     })
+
+    // Substitui a mensagem antiga pela nova mensagem
+    chat.messages[messageIndex] = updatedMessage
 
     // Atualiza o chat na lista principal
     this.chats[chatIndex] = chat
