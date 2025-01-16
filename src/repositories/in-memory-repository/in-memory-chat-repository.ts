@@ -4,7 +4,7 @@ import {
   Messages,
   MessagesCreateInput,
 } from '@/@types/chat'
-import { ChatRepository } from '../chat-repository'
+import { ChatRepository, UpdateMessage } from '../chat-repository'
 import { randomUUID } from 'node:crypto'
 
 export class InMemoryChatRepository implements ChatRepository {
@@ -72,5 +72,57 @@ export class InMemoryChatRepository implements ChatRepository {
     }
 
     return chat?.messages ? chat.messages.slice((page - 1) * 50, page * 50) : []
+  }
+
+  async updateMessage({
+    chatId,
+    messageId,
+    data,
+  }: UpdateMessage): Promise<Messages> {
+    // Localiza o chat pelo ID
+    const chatIndex = this.chats.findIndex((chat) => chat.id === chatId)
+
+    if (chatIndex === -1) {
+      throw new Error(`Chat with ID ${chatId} not found`)
+    }
+
+    const chat = this.chats[chatIndex]
+
+    // Localiza a mensagem pelo ID dentro do chat
+    const messageIndex = chat.messages.findIndex(
+      (message) => message.id === messageId,
+    )
+
+    if (messageIndex === -1) {
+      throw new Error(
+        `Message with ID ${messageId} not found in chat ${chatId}`,
+      )
+    }
+
+    // Atualiza os dados da mensagem
+    const updatedMessage = {
+      ...chat.messages[messageIndex],
+      ...data,
+      updatedAt: new Date(), // Atualiza o timestamp
+    }
+
+    // Substitui a mensagem pelo valor atualizado
+    chat.messages[messageIndex] = updatedMessage
+
+    if (!chat.messages[messageIndex].alterations) {
+      chat.messages[messageIndex].alterations = []
+    }
+
+    chat.messages[messageIndex].alterations.push({
+      id: randomUUID(),
+      originalMessage: chat.messages[messageIndex].text,
+      timestamp: new Date(),
+    })
+
+    // Atualiza o chat na lista principal
+    this.chats[chatIndex] = chat
+
+    // Retorna a mensagem atualizada
+    return updatedMessage as Messages
   }
 }
