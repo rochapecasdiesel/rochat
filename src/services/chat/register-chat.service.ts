@@ -51,7 +51,7 @@ export class CreateChatService {
     }
 
     const areAllParticipantsEqual = participantsInDB.every(
-      (participant) => participant === participantsInDB[0],
+      (participant) => participant?.id === participantsInDB[0]?.id,
     )
 
     // Se caso todos participantes foram iguais, deve se retornar um erro
@@ -83,17 +83,21 @@ export class CreateChatService {
     await Promise.all(
       participantsInDB.map(async (participant) => {
         if (participant) {
-          const updatedUserChats = [
-            ...(participant.userChats || []),
-            {
-              assignedUser: assingnedUser,
-              lastMessage: '',
-              lastTimestamp: null,
-              participantId: participants,
-              chatId: chat.id,
-            },
-          ] as UserChat[]
+          const updatedUserChats = Array.isArray(participant.userChats)
+            ? participant.userChats
+            : []
 
+          const newUserChat = {
+            assignedUser: assingnedUser,
+            lastMessage: '',
+            lastTimestamp: new Date(),
+            participantId: participants,
+            chatId: chat.id,
+          } as UserChat
+
+          updatedUserChats.push(newUserChat)
+
+          // Atualiza o participante no repositório com o novo array
           await this.usersRepository.update(participant.id, {
             userChats: updatedUserChats,
           })

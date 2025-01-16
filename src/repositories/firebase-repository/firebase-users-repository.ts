@@ -46,6 +46,7 @@ export class FirebaseUsersRepository implements UsersRepository {
       createdAt: userData?.createdAt ? userData.createdAt : null,
       updatedAt: userData?.updatedAt ? userData.updatedAt : null,
       avatarUrl: userData?.avatarUrl ? userData.avatarUrl : null,
+      userChats: userData?.userChats ? userData.userChats : null,
     }
 
     return user
