@@ -59,6 +59,8 @@ export class InMemoryChatRepository implements ChatRepository {
 
       // Adiciona a nova mensagem
       this.chats[index].messages.push(message)
+      this.chats[index].lastMessage = message.text
+      this.chats[index].lastTimestamp = message.createAt
     }
 
     return message
