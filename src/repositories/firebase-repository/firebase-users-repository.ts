@@ -1,6 +1,7 @@
 import { db } from '@/lib/firebase'
-import { UsersRepository } from '../users-repository'
-import { User, UserCreateInput, UserUpdateInput } from '@/@types/user'
+import { UpdateUserChat, UsersRepository } from '../users-repository'
+import { User, UserChat, UserCreateInput, UserUpdateInput } from '@/@types/user'
+import { randomUUID } from 'node:crypto'
 
 export class FirebaseUsersRepository implements UsersRepository {
   private usersCollection = db.collection('users')
@@ -77,5 +78,132 @@ export class FirebaseUsersRepository implements UsersRepository {
       id,
       ...updatedData,
     } as User
+  }
+
+  async findManyByName(name: string): Promise<User[]> {
+    // Faz uma consulta na coleção de usuários para encontrar documentos cujo campo 'name' corresponda
+    const querySnapshot = await this.usersCollection
+      .where('name', '==', name) // Filtra os documentos onde o campo 'name' é igual ao parâmetro fornecido
+      .get()
+
+    // Verifica se encontrou algum resultado
+    if (querySnapshot.empty) {
+      return []
+    }
+
+    // Mapeia os documentos encontrados para o formato esperado de User
+    return querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as User[]
+  }
+
+  async createUserChat(userId: string, data: UserChat): Promise<UserChat> {
+    const userDocRef = this.usersCollection.doc(userId)
+
+    // Verifica se o documento do chat existe
+    const userDoc = await userDocRef.get()
+
+    if (!userDoc.exists) {
+      throw new Error(`User with ID ${userId} does not exist.`)
+    }
+
+    const userChatId = randomUUID()
+
+    const userChatsCollectionRef = userDocRef.collection('userChats')
+
+    await userChatsCollectionRef.doc(userChatId).set(data)
+
+    return {
+      ...data,
+      id: userChatId,
+    }
+  }
+
+  async updateUserChat(data: UpdateUserChat): Promise<UserChat> {
+    const userDocRef = this.usersCollection.doc(data.userId)
+
+    // Verifica se o documento do usuário existe
+    const userDoc = await userDocRef.get()
+    if (!userDoc.exists) {
+      throw new Error(`User with ID ${data.userId} does not exist.`)
+    }
+
+    const userChatsCollectionRef = userDocRef.collection('userChats')
+    const userChatDocRef = userChatsCollectionRef.doc(data.userChatId)
+
+    // Verifica se o documento do chat existe
+    const userChatDoc = await userChatDocRef.get()
+    if (!userChatDoc.exists) {
+      throw new Error(
+        `UserChat with ID ${data.userChatId} does not exist for user ${data.userChatId}.`,
+      )
+    }
+
+    // Atualiza o documento do chat
+    await userChatDocRef.update(data.data)
+
+    return {
+      ...userChatDoc.data(),
+      id: data.userChatId,
+    } as UserChat
+  }
+
+  async findUserChatById(
+    userId: string,
+    userChatId: string,
+  ): Promise<UserChat | null> {
+    const userDocRef = this.usersCollection.doc(userId)
+
+    // Verifica se o documento do usuário existe
+    const userDoc = await userDocRef.get()
+    if (!userDoc.exists) {
+      throw new Error(`User with ID ${userId} does not exist.`)
+    }
+
+    const userChatsCollectionRef = userDocRef.collection('userChats')
+    const userChatDocRef = userChatsCollectionRef.doc(userChatId)
+
+    // Obtém o documento do chat
+    const userChatDoc = await userChatDocRef.get()
+
+    if (!userChatDoc.exists) {
+      return null
+    }
+
+    return {
+      id: userChatId,
+      ...userChatDoc.data(),
+    } as UserChat
+  }
+
+  async getUserChats(userId: string, page: number): Promise<UserChat[]> {
+    const ITEMS_PER_PAGE = 50 // Número fixo de itens por página
+
+    const userDocRef = this.usersCollection.doc(userId)
+
+    // Verifica se o documento do usuário existe
+    const userDoc = await userDocRef.get()
+    if (!userDoc.exists) {
+      throw new Error(`User with ID ${userId} does not exist.`)
+    }
+
+    const userChatsCollectionRef = userDocRef.collection('userChats')
+
+    // Calcula o offset com base na página
+    const offset = (page - 1) * ITEMS_PER_PAGE
+
+    // Consulta os itens com limite e deslocamento
+    const querySnapshot = await userChatsCollectionRef
+      .orderBy('createdAt') // Ordenação (ajuste conforme necessário)
+      .offset(offset) // Deslocamento baseado na página
+      .limit(ITEMS_PER_PAGE) // Limite de itens por página
+      .get()
+
+    // Mapeia os documentos para o formato `UserChat`
+    return querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as UserChat[]
   }
 }

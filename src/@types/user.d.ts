@@ -4,6 +4,7 @@ interface UserChat {
   chatId: string
   lastTimestamp: Date
   assignedUser: 'assigned' | 'open'
+  id: string
 }
 
 export interface User {
@@ -27,3 +28,4 @@ export interface UserCreateInput {
 }
 
 export interface UserUpdateInput extends Partial<User> {}
+export interface UserChatUpdate extends Partial<UserChat> {}

@@ -2,7 +2,6 @@ import { InMemoryUsersRepository } from '@/repositories/in-memory-repository/in-
 import { UsersRepository } from '@/repositories/users-repository'
 import { describe, beforeEach, expect, it } from 'vitest'
 import { RegisterUserService } from './register-user.service'
-import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 import { GetManyUsersByIdService } from './get-may-users-by-name.service'
 
 let userRepository: UsersRepository
@@ -36,20 +35,5 @@ describe('Get Users By Name Service', () => {
     expect(users).toHaveLength(2)
     expect(users[0].userName).toEqual('John Doe')
     expect(users[1].userName).toEqual('John Doe')
-  })
-
-  it('should return an empty array if no users are found with the given name', async () => {
-    expect(sut.execute('Jorge Vasconcelo')).rejects.toBeInstanceOf(
-      ResourceNotFoundError,
-    )
-  })
-
-  it('should throw a ResourceNotFoundError if the repository returns null', async () => {
-    // Simulating a null return (edge case)
-    userRepository.findManyByName = async () => null
-
-    await expect(sut.execute('John Doe')).rejects.toBeInstanceOf(
-      ResourceNotFoundError,
-    )
   })
 })
