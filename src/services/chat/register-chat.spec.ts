@@ -27,15 +27,18 @@ describe('Register chat Service', () => {
       status: 'open',
     })
 
-    const userResponse = await usersRepository.findById('100001')
+    const userResponse = await usersRepository.findUserChatByChatId(
+      '100001',
+      chat.id,
+    )
 
     expect(chat.participants).toHaveLength(2)
 
-    expect(userResponse?.userChats).toEqual([
+    expect(userResponse).toEqual(
       expect.objectContaining({
         participantId: ['100001', '100002'],
       }),
-    ])
+    )
   })
 
   it('should not be able to register a chat that some user does not exist', async () => {

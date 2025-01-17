@@ -206,4 +206,39 @@ export class FirebaseUsersRepository implements UsersRepository {
       ...doc.data(),
     })) as UserChat[]
   }
+
+  async findUserChatByChatId(
+    userId: string,
+    chatId: string,
+  ): Promise<UserChat | null> {
+    // Referência ao documento do usuário
+    const userDocRef = this.usersCollection.doc(userId)
+
+    // Verificar se o usuário existe
+    const userDoc = await userDocRef.get()
+    if (!userDoc.exists) {
+      throw new Error(`User with ID ${userId} does not exist.`)
+    }
+
+    // Referência à coleção de chats do usuário
+    const userChatsCollectionRef = userDocRef.collection('userChats')
+
+    // Consultar o chat pelo campo 'chatId'
+    const querySnapshot = await userChatsCollectionRef
+      .where('chatId', '==', chatId)
+      .limit(1)
+      .get()
+
+    // Verificar se o chat foi encontrado
+    if (querySnapshot.empty) {
+      return null
+    }
+
+    // Retornar o primeiro documento encontrado
+    const chatDoc = querySnapshot.docs[0]
+    return {
+      id: chatDoc.id, // ID do documento
+      ...chatDoc.data(),
+    } as UserChat
+  }
 }

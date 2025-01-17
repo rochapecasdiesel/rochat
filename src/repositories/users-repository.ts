@@ -19,5 +19,6 @@ export interface UsersRepository {
   createUserChat(userId: string, data: UserChat): Promise<UserChat>
   updateUserChat(data: UpdateUserChat): Promise<UserChat>
   findUserChatById(userId: string, userChatId: string): Promise<UserChat | null>
+  findUserChatByChatId(userId: string, chatId: string): Promise<UserChat | null>
   getUserChats(userId: string, page: number): Promise<UserChat[]>
 }

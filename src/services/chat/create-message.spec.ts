@@ -4,6 +4,7 @@ import { InMemoryUsersRepository } from '@/repositories/in-memory-repository/in-
 import { CreateMessageService } from './create-message.service'
 import { createMultipleUsers } from '../../utils/testUtilityFunctions'
 import { ResourceNotFoundError } from '../erros/resource-not-found-error'
+import { UserChat } from '@/@types/user'
 
 let chatRepository: InMemoryChatRepository
 let usersRepository: InMemoryUsersRepository
@@ -26,6 +27,17 @@ describe('Create Message Service', () => {
       participants: ['100002', '100001'],
       status: 'open',
     })
+
+    const userChat = {
+      assignedUser: 'assigned',
+      chatId: chatResponse.id,
+      lastMessage: '',
+      lastTimestamp: new Date(),
+      participantId: ['100002', '100001'],
+    } as UserChat
+
+    await usersRepository.createUserChat('100002', userChat)
+    await usersRepository.createUserChat('100001', userChat)
 
     // Executa o serviço para criar uma mensagem
     const { message } = await sut.execute({
@@ -50,24 +62,31 @@ describe('Create Message Service', () => {
     )
 
     // Verifica se os chats dos participantes foram atualizados corretamente
-    const sender = await usersRepository.findById('100001')
-    const receiver = await usersRepository.findById('100002')
+    const sender = await usersRepository.findUserChatByChatId(
+      '100001',
+      chatResponse.id,
+    )
 
-    expect(sender?.userChats).toEqual([
+    const receiver = await usersRepository.findUserChatByChatId(
+      '100002',
+      chatResponse.id,
+    )
+
+    expect(sender).toEqual(
       expect.objectContaining({
         chatId: chatResponse.id,
         lastMessage: message.text,
         lastTimestamp: message.createAt,
       }),
-    ])
+    )
 
-    expect(receiver?.userChats).toEqual([
+    expect(receiver).toEqual(
       expect.objectContaining({
         chatId: chatResponse.id,
         lastMessage: message.text,
         lastTimestamp: message.createAt,
       }),
-    ])
+    )
   })
 
   it('should throw an error if the chat does not exist', async () => {

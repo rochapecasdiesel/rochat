@@ -30,6 +30,8 @@ describe('Get user Service', () => {
   })
 
   it('should not be able to get a user', async () => {
-    expect(sut.execute('000075')).rejects.toBeInstanceOf(ResourceNotFoundError)
+    await expect(() => sut.execute('000075')).rejects.toBeInstanceOf(
+      ResourceNotFoundError,
+    )
   })
 })

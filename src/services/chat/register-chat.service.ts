@@ -83,10 +83,6 @@ export class CreateChatService {
     await Promise.all(
       participantsInDB.map(async (participant) => {
         if (participant) {
-          const updatedUserChats = Array.isArray(participant.userChats)
-            ? participant.userChats
-            : []
-
           const newUserChat = {
             assignedUser: assingnedUser,
             lastMessage: '',
@@ -95,12 +91,7 @@ export class CreateChatService {
             chatId: chat.id,
           } as UserChat
 
-          updatedUserChats.push(newUserChat)
-
-          // Atualiza o participante no repositório com o novo array
-          await this.usersRepository.update(participant.id, {
-            userChats: updatedUserChats,
-          })
+          await this.usersRepository.createUserChat(participant.id, newUserChat)
         }
       }),
     )

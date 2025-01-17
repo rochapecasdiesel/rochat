@@ -1,7 +1,6 @@
 import { ChatRepository } from '@/repositories/chat-repository'
 import { UsersRepository } from '@/repositories/users-repository'
 import { Messages } from '@/@types/chat'
-import { UserChat } from '@/@types/user'
 import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 
 interface CreateMessageServiceRequest {
@@ -61,25 +60,20 @@ export class CreateMessageService {
     // Atualiza os chats de cada participante
     await Promise.all(
       isChatAllreadyExists.participants.map(async (id) => {
-        const user = await this.usersRepository.findById(id)
+        const userChat = await this.usersRepository.findUserChatByChatId(
+          id,
+          chatId,
+        )
 
-        if (user) {
-          // Converte a mensagem em um UserChat
-          const newUserChat: UserChat = {
-            chatId,
-            participantId: [senderId, recieverId], // Atribui os IDs dos participantes
-            lastMessage: message.text, // Usa o texto da mensagem como o último texto
-            lastTimestamp: message.createAt, // Usando a data de criação da mensagem como timestamp
-            assignedUser: 'assigned',
-          }
-
-          // Adiciona o UserChat à lista de chats do usuário
-          user.userChats = user.userChats
-            ? [...user.userChats, newUserChat]
-            : [newUserChat]
-
-          // Atualiza o usuário no repositório
-          await this.usersRepository.update(id, { userChats: user.userChats })
+        if (userChat) {
+          await this.usersRepository.updateUserChat({
+            userChatId: userChat.id,
+            userId: id,
+            data: {
+              lastMessage: message.text,
+              lastTimestamp: message.createAt,
+            },
+          })
         }
       }),
     )

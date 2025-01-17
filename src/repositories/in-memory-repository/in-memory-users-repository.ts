@@ -106,7 +106,7 @@ export class InMemoryUsersRepository implements UsersRepository {
     // Atualizar o chat com os novos dados
     const updatedChat = {
       ...user.userChats[userChatIndex],
-      ...updateData,
+      ...updateData.data,
     }
 
     user.userChats[userChatIndex] = updatedChat
@@ -161,5 +161,20 @@ export class InMemoryUsersRepository implements UsersRepository {
 
     // Retornar os itens paginados
     return user.userChats.slice(startIndex, endIndex)
+  }
+
+  async findUserChatByChatId(
+    userId: string,
+    chatId: string,
+  ): Promise<UserChat | null> {
+    const user = this.users.find((user) => user.id === userId)
+
+    if (!user) {
+      return null
+    }
+
+    return (
+      user.userChats?.find((userchats) => userchats.chatId === chatId) ?? null
+    )
   }
 }
