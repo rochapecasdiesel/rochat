@@ -121,6 +121,7 @@ export class InMemoryChatRepository implements ChatRepository {
       id: randomUUID(),
       originalMessage: originalMessage.text, // Mantém a mensagem original
       timestamp: new Date(),
+      deleted: originalMessage.deleted,
     })
 
     // Substitui a mensagem antiga pela nova mensagem

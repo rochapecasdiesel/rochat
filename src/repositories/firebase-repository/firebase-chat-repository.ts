@@ -214,6 +214,7 @@ export class FirebaseChatRepository implements ChatRepository {
       id: randomUUID(),
       originalMessage: messageData.text,
       timestamp: new Date(),
+      deleted: messageData.deleted,
     }
 
     // Atualiza os campos da mensagem

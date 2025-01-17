@@ -2,6 +2,7 @@ export interface Alterations {
   id: string
   originalMessage: string
   timestamp: Date
+  deleted: boolean
 }
 
 export interface Messages {
