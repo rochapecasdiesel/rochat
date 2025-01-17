@@ -14,7 +14,7 @@ describe('Update Message Text Service', () => {
   beforeEach(async () => {
     chatRepository = new InMemoryChatRepository()
     usersRepository = new InMemoryUsersRepository()
-    sut = new UpdateMessageTextService(chatRepository)
+    sut = new UpdateMessageTextService(chatRepository, usersRepository)
 
     // Cria dois usuários para os testes
     await createMultipleUsers(usersRepository, 2)

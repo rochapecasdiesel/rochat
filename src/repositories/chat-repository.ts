@@ -4,6 +4,7 @@ import {
   MessagesCreateInput,
   Messages,
   MessagesUpdateInput,
+  ChatUpdateInput,
 } from '@/@types/chat'
 
 export interface UpdateMessage {
@@ -14,6 +15,7 @@ export interface UpdateMessage {
 
 export interface ChatRepository {
   create(data: ChatCreateInput): Promise<Chat>
+  updateChat(chatId: string, data: ChatUpdateInput): Promise<Chat>
   findByParticipants(participants: string[]): Promise<Chat | null>
   findById(id: string): Promise<Chat | null>
   createMessagem(chatId: string, data: MessagesCreateInput): Promise<Messages>

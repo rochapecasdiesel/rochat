@@ -1,6 +1,7 @@
 import {
   Chat,
   ChatCreateInput,
+  ChatUpdateInput,
   Messages,
   MessagesCreateInput,
 } from '@/@types/chat'
@@ -18,6 +19,22 @@ export class InMemoryChatRepository implements ChatRepository {
     }
     this.chats.push(chat as Chat)
     return chat as Chat
+  }
+
+  async updateChat(chatId: string, data: ChatUpdateInput): Promise<Chat> {
+    const chatIndex = this.chats.findIndex((chat) => chat.id === chatId)
+
+    if (chatIndex === -1) {
+      throw new Error(`Chat with ID ${chatId} not found`)
+    }
+
+    this.chats[chatIndex] = {
+      ...this.chats[chatIndex],
+      ...data,
+      updatedAt: new Date(),
+    }
+
+    return this.chats[chatIndex]
   }
 
   async findByParticipants(participants: string[]) {

@@ -2,6 +2,7 @@ import { ChatRepository } from '@/repositories/chat-repository'
 import { Messages } from '@/@types/chat'
 import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 import { PermissionDeniedError } from '../erros/permission-denied-error'
+import { UsersRepository } from '@/repositories/users-repository'
 
 interface DeleteMessageServiceRequest {
   chatId: string
@@ -14,7 +15,10 @@ interface DeleteMessageServiceResponse {
 }
 
 export class DeleteMessageService {
-  constructor(private chatRepository: ChatRepository) {}
+  constructor(
+    private chatRepository: ChatRepository,
+    private usersRepository: UsersRepository,
+  ) {}
 
   async execute({
     chatId,
@@ -43,6 +47,31 @@ export class DeleteMessageService {
         deleted: true,
       },
     })
+
+    await Promise.all(
+      isChatAllreadyExists.participants.map(async (id) => {
+        const userChat = await this.usersRepository.findUserChatByChatId(
+          id,
+          chatId,
+        )
+
+        if (userChat && userChat.lastMessage === message.text) {
+          await this.usersRepository.updateUserChat({
+            userChatId: userChat.id,
+            userId: id,
+            data: {
+              lastMessage: 'message deleted',
+              lastTimestamp: message.createAt,
+            },
+          })
+
+          await this.chatRepository.updateChat(chatId, {
+            lastMessage: 'message deleted',
+            lastTimestamp: message.createAt,
+          })
+        }
+      }),
+    )
 
     return { message }
   }

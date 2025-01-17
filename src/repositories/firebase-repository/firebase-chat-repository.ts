@@ -4,6 +4,7 @@ import {
   MessagesCreateInput,
   Messages,
   Alterations,
+  ChatUpdateInput,
 } from '@/@types/chat'
 import { ChatRepository, UpdateMessage } from '../chat-repository'
 import { db } from '@/lib/firebase'
@@ -31,6 +32,28 @@ export class FirebaseChatRepository implements ChatRepository {
     } as Chat
 
     return createdChat
+  }
+
+  async updateChat(chatId: string, data: ChatUpdateInput): Promise<Chat> {
+    const chatDocRef = this.chatCollection.doc(chatId)
+
+    // Verifica se o documento do chat existe
+    const chatDoc = await chatDocRef.get()
+    if (!chatDoc.exists) {
+      throw new Error(`Chat with ID ${chatId} does not exist.`)
+    }
+
+    await chatDocRef.update({
+      ...data,
+      updateAt: new Date(),
+    })
+
+    const updatedChatSnapshot = await chatDocRef.get()
+
+    return {
+      id: updatedChatSnapshot.id,
+      ...updatedChatSnapshot.data(),
+    } as Chat
   }
 
   async findByParticipants(participants: string[]) {

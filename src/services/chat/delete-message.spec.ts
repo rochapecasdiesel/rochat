@@ -5,6 +5,7 @@ import { createMultipleUsers } from '../../utils/testUtilityFunctions'
 import { DeleteMessageService } from './delete-message.service'
 import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 import { PermissionDeniedError } from '../erros/permission-denied-error'
+import { UserChat } from '@/@types/user'
 
 let chatRepository: InMemoryChatRepository
 let usersRepository: InMemoryUsersRepository
@@ -14,7 +15,7 @@ describe('Delete Message Service', () => {
   beforeEach(async () => {
     chatRepository = new InMemoryChatRepository()
     usersRepository = new InMemoryUsersRepository()
-    sut = new DeleteMessageService(chatRepository)
+    sut = new DeleteMessageService(chatRepository, usersRepository)
 
     // Cria dois usuários para os testes
     await createMultipleUsers(usersRepository, 2)
@@ -25,7 +26,7 @@ describe('Delete Message Service', () => {
     const chatResponse = await chatRepository.create({
       assingnedUser: 'User1',
       participants: ['100002', '100001'],
-      status: 'open',
+      status: 'assigned',
     })
 
     // Cria uma mensagem para o teste
@@ -41,6 +42,17 @@ describe('Delete Message Service', () => {
       },
     )
 
+    const userChat = {
+      assignedUser: 'assigned',
+      chatId: chatResponse.id,
+      lastMessage: 'Hello World!!',
+      lastTimestamp: new Date(),
+      participantId: ['100002', '100001'],
+    } as UserChat
+
+    await usersRepository.createUserChat('100002', userChat)
+    await usersRepository.createUserChat('100001', userChat)
+
     // Executa o serviço de exclusão de mensagem
     const { message } = await sut.execute({
       chatId: chatResponse.id,
@@ -48,10 +60,36 @@ describe('Delete Message Service', () => {
       userId: '100001',
     })
 
+    const sender = await usersRepository.findUserChatByChatId(
+      '100001',
+      chatResponse.id,
+    )
+
+    const receiver = await usersRepository.findUserChatByChatId(
+      '100002',
+      chatResponse.id,
+    )
+
     // Verifica se a mensagem foi marcada como deletada
     expect(message.deleted).toEqual(true)
     expect(message.alterations).toHaveLength(1)
     expect(message.alterations?.[0].originalMessage).toEqual('Hello World!!')
+
+    expect(sender).toEqual(
+      expect.objectContaining({
+        chatId: chatResponse.id,
+        lastMessage: 'message deleted',
+        lastTimestamp: message.createAt,
+      }),
+    )
+
+    expect(receiver).toEqual(
+      expect.objectContaining({
+        chatId: chatResponse.id,
+        lastMessage: 'message deleted',
+        lastTimestamp: message.createAt,
+      }),
+    )
   })
 
   it('should throw an error if the chat does not exist', async () => {

@@ -2,6 +2,7 @@ import { ChatRepository } from '@/repositories/chat-repository'
 import { Messages } from '@/@types/chat'
 import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 import { PermissionDeniedError } from '../erros/permission-denied-error'
+import { UsersRepository } from '@/repositories/users-repository'
 
 interface UpdateMessageTextServiceRequest {
   chatId: string
@@ -15,7 +16,10 @@ interface UpdateMessageTextServiceResponse {
 }
 
 export class UpdateMessageTextService {
-  constructor(private chatRepository: ChatRepository) {}
+  constructor(
+    private chatRepository: ChatRepository,
+    private usersRepository: UsersRepository,
+  ) {}
 
   async execute({
     chatId,
@@ -45,6 +49,35 @@ export class UpdateMessageTextService {
         text,
       },
     })
+
+    await Promise.all(
+      isChatAllreadyExists.participants.map(async (id) => {
+        const userChat = await this.usersRepository.findUserChatByChatId(
+          id,
+          chatId,
+        )
+
+        if (
+          userChat &&
+          userChat.lastMessage === message.text &&
+          userChat.lastTimestamp === message.createAt
+        ) {
+          await this.usersRepository.updateUserChat({
+            userChatId: userChat.id,
+            userId: id,
+            data: {
+              lastMessage: message.text,
+              lastTimestamp: message.createAt,
+            },
+          })
+
+          await this.chatRepository.updateChat(chatId, {
+            lastMessage: message.text,
+            lastTimestamp: message.createAt,
+          })
+        }
+      }),
+    )
 
     return { message }
   }
