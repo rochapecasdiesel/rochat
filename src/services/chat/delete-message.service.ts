@@ -3,6 +3,7 @@ import { Messages } from '@/@types/chat'
 import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 import { PermissionDeniedError } from '../erros/permission-denied-error'
 import { UsersRepository } from '@/repositories/users-repository'
+import { Timestamp, timestampToDate } from '@/utils/timestampToDate'
 
 interface DeleteMessageServiceRequest {
   chatId: string
@@ -32,9 +33,12 @@ export class DeleteMessageService {
       throw new ResourceNotFoundError()
     }
 
-    const isUserMessage =
-      (await this.chatRepository.findMessageByid(chatId, messageId))
-        ?.senderId === userId
+    const oldMessage = await this.chatRepository.findMessageByid(
+      chatId,
+      messageId,
+    )
+
+    const isUserMessage = oldMessage?.senderId === userId
 
     if (!isUserMessage) {
       throw new PermissionDeniedError()
@@ -48,14 +52,29 @@ export class DeleteMessageService {
       },
     })
 
+    const oldMessageDate = oldMessage?.createAt
+      ? oldMessage.createAt instanceof Date
+        ? oldMessage.createAt
+        : timestampToDate(oldMessage.createAt as Timestamp)
+      : null // Define um valor padrão quando createAt é undefined
+
+    const chatLastDate = isChatAllreadyExists?.lastTimestamp
+      ? isChatAllreadyExists.lastTimestamp instanceof Date
+        ? isChatAllreadyExists.lastTimestamp
+        : timestampToDate(isChatAllreadyExists.lastTimestamp as Timestamp)
+      : null // Define um valor padrão quando lastTimestamp é undefined
+
     await Promise.all(
       isChatAllreadyExists.participants.map(async (id) => {
         const userChat = await this.usersRepository.findUserChatByChatId(
           id,
           chatId,
         )
-
-        if (userChat && userChat.lastMessage === message.text) {
+        if (
+          userChat &&
+          userChat.lastMessage === message.text &&
+          oldMessageDate?.getTime() === chatLastDate?.getTime()
+        ) {
           await this.usersRepository.updateUserChat({
             userChatId: userChat.id,
             userId: id,
