@@ -159,6 +159,34 @@ export class FirebaseChatRepository implements ChatRepository {
     return snapshot.docs.map((doc) => doc.data() as Messages)
   }
 
+  async findMessageByid(chatId: string, messageId: string) {
+    // Obtém a referência ao documento do chat
+    const chatDocRef = this.chatCollection.doc(chatId)
+
+    // Verifica se o documento do chat existe
+    const chatDoc = await chatDocRef.get()
+    if (!chatDoc.exists) {
+      throw new Error(`Chat with ID ${chatId} does not exist.`)
+    }
+
+    // Obtém a referência à subcoleção 'messages' e ao documento da mensagem
+    const messageDocRef = chatDocRef.collection('messages').doc(messageId)
+
+    // Verifica se o documento da mensagem existe
+    const messageDoc = await messageDocRef.get()
+    if (!messageDoc.exists) {
+      return null
+    }
+
+    // Obtém os dados da mensagem atual
+    const messageData = messageDoc.data() as Messages
+
+    return {
+      ...messageData,
+      id: messageDoc.id,
+    } as Messages
+  }
+
   async updateMessage(data: UpdateMessage) {
     // Obtém a referência ao documento do chat
     const chatDocRef = this.chatCollection.doc(data.chatId)

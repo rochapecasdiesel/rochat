@@ -29,7 +29,7 @@ export class DeleteMessageService {
     }
 
     const isUserMessage =
-      isChatAllreadyExists.messages.find((message) => message.id === messageId)
+      (await this.chatRepository.findMessageByid(chatId, messageId))
         ?.senderId === userId
 
     if (!isUserMessage) {

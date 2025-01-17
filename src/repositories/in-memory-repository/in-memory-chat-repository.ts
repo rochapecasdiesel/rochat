@@ -132,4 +132,18 @@ export class InMemoryChatRepository implements ChatRepository {
     // Retorna a mensagem atualizada
     return updatedMessage as Messages
   }
+
+  async findMessageByid(chatId: string, messageId: string) {
+    const chat = this.chats.find((chat) => chat.id === chatId)
+
+    if (!chat) {
+      return null
+    }
+
+    const message = chat.messages.find((message) => message.id === messageId)
+
+    if (!message) return null
+
+    return message
+  }
 }

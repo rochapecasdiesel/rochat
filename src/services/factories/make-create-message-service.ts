@@ -1,6 +1,6 @@
 import { FirebaseChatRepository } from '@/repositories/firebase-repository/firebase-chat-repository'
-import { FirebaseUsersRepository } from '@/repositories/firebase-repository/firebase-users-repository'
 import { CreateMessageService } from '../chat/create-message.service'
+import { FirebaseUsersRepository } from '@/repositories/firebase-repository/firebase-users-repository'
 
 export function makeCreateMessageService() {
   const chatRepository = new FirebaseChatRepository()
@@ -9,6 +9,5 @@ export function makeCreateMessageService() {
     chatRepository,
     usersRepository,
   )
-
   return createMessageService
 }

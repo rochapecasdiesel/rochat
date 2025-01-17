@@ -19,4 +19,5 @@ export interface ChatRepository {
   createMessagem(chatId: string, data: MessagesCreateInput): Promise<Messages>
   getMessages(chatId: string, page: number): Promise<Messages[]>
   updateMessage(data: UpdateMessage): Promise<Messages>
+  findMessageByid(chatId: string, messageId: string): Promise<Messages | null>
 }
