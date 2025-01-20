@@ -4,6 +4,7 @@ import { createNewMessageController } from '../controllers/chats/create-new-mess
 import { deleteMessageController } from '../controllers/chats/delete-message.controller'
 import { updateMessageTextController } from '../controllers/chats/update-message-text.controller'
 import { getMessagesController } from '../controllers/chats/get-messages.controller'
+import { getChatByIdController } from '../controllers/chats/get-chat-by-id.controller'
 
 export async function chatRoutes(app: FastifyInstance) {
   app.post('/', createNewController)
@@ -11,4 +12,5 @@ export async function chatRoutes(app: FastifyInstance) {
   app.patch('/:chatId/message/:messageId', updateMessageTextController)
   app.delete('/:chatId/message/:messageId', deleteMessageController)
   app.get('/:chatId/messages', getMessagesController)
+  app.get('/:chatId', getChatByIdController)
 }
