@@ -17,7 +17,7 @@ describe('Register User Controller (e2e)', () => {
   })
 
   it('should be able to register', async () => {
-    const token = generateFakeJwt({ sub: '000076' })
+    const token = generateFakeJwt({ sub: '000078' })
 
     const response = await request(app.server)
       .post('/users')
@@ -26,7 +26,6 @@ describe('Register User Controller (e2e)', () => {
         userName: 'John Doe',
         userMessage: 'johndoe@example.com',
         avatarUrl: '123456',
-        documentId: '000076',
       })
 
     expect(response.statusCode).toBe(201)

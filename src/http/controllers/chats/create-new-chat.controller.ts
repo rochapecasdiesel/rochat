@@ -18,11 +18,12 @@ export async function createNewController(
   try {
     const registerChatService = makeRegisterChatService()
 
-    await registerChatService.execute({
+    const chat = await registerChatService.execute({
       participants,
       assingnedUser: request.user.sub,
       status: 'assigned',
     })
+    return reply.status(201).send({ data: chat })
   } catch (err) {
     if (err instanceof ChatAlreadyExist) {
       return reply.status(400).send({
@@ -44,6 +45,4 @@ export async function createNewController(
 
     throw err
   }
-
-  return reply.status(201).send()
 }
