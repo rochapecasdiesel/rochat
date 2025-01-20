@@ -83,7 +83,8 @@ export class FirebaseUsersRepository implements UsersRepository {
   async findManyByName(name: string): Promise<User[]> {
     // Faz uma consulta na coleção de usuários para encontrar documentos cujo campo 'name' corresponda
     const querySnapshot = await this.usersCollection
-      .where('name', '==', name) // Filtra os documentos onde o campo 'name' é igual ao parâmetro fornecido
+      .where('userName', '>=', name) // Nomes que começam com o prefixo `name`
+      .where('userName', '<', name + '\uf8ff') // Limite superior com sufixo especial
       .get()
 
     // Verifica se encontrou algum resultado

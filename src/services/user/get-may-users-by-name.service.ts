@@ -5,7 +5,7 @@ interface GetManyUserByNameServiceResponse {
   users: User[]
 }
 
-export class GetManyUsersByIdService {
+export class GetManyUsersByNameService {
   constructor(private userRepository: UsersRepository) {}
 
   async execute(name: string): Promise<GetManyUserByNameServiceResponse> {

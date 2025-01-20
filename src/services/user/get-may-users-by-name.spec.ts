@@ -2,16 +2,16 @@ import { InMemoryUsersRepository } from '@/repositories/in-memory-repository/in-
 import { UsersRepository } from '@/repositories/users-repository'
 import { describe, beforeEach, expect, it } from 'vitest'
 import { RegisterUserService } from './register-user.service'
-import { GetManyUsersByIdService } from './get-may-users-by-name.service'
+import { GetManyUsersByNameService } from './get-may-users-by-name.service'
 
 let userRepository: UsersRepository
 let register: RegisterUserService
-let sut: GetManyUsersByIdService
+let sut: GetManyUsersByNameService
 
 describe('Get Users By Name Service', () => {
   beforeEach(() => {
     userRepository = new InMemoryUsersRepository()
-    sut = new GetManyUsersByIdService(userRepository)
+    sut = new GetManyUsersByNameService(userRepository)
     register = new RegisterUserService(userRepository)
   })
 
