@@ -3,7 +3,7 @@ name: Run E2E Tests
 on: 
   pull_request:
     branches:
-      - main  # ou o nome da branch de destino para PRs, caso seja diferente
+      - main
       - dev
 
 jobs:
@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'temurin' # Temurin é recomendado como distribuição open-source do JDK
+          distribution: 'temurin'
 
       # Instalar dependências do projeto
       - name: Install dependencies
@@ -38,21 +38,21 @@ jobs:
       - name: Start Firebase Emulators
         run: |
           nohup npm run test:emulators & 
-          sleep 10 # Aguarda 10 segundos para garantir que os emuladores estejam prontos
+          sleep 10
       
       # Executar os testes E2E
       - name: Run E2E tests
         run: npm run test:e2e
         env:
-          JWT_SECRET: testing
-          DATABASE_URL: "rocha-tech-test"
-          PROJECT_ID : "teste"
-          PRIVATE_KEY_ID : "dwqqwdqwdqwd"
-          PRIVATE_KEY : "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhrdvF\nJDK\n-----END PRIVATE KEY-----\n"
-          CLIENT_EMAIL : "testets@teste.com"
-          CLIENT_ID : "testes"
-          AUTH_URI : "https://accounts.google.com/o/oauth2/auth"
-          TOKEN_URI : "https://oauth2.googleapis.com/token"
-          AUTH_PROVIDER_X509_CERT_URL : "https://www.googleapis.com/oauth2/v1/certs"
-          CLIENT_X509_CERT_URL : "https://www.googleapis.com/robot/v1/metadata/x509"
-          UNIVERSE_DOMAIN : "googleapis.com"
+          NODE_ENV: "test"
+          JWT_SECRET: "testing"
+          PROJECT_ID: "local-test-project"
+          PRIVATE_KEY_ID: "test-key-id"
+          PRIVATE_KEY: "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhrdvF\nJDK\n-----END PRIVATE KEY-----\n"
+          CLIENT_EMAIL: "test@test.com"
+          CLIENT_ID: "test-client-id"
+          AUTH_URI: "https://accounts.google.com/o/oauth2/auth"
+          TOKEN_URI: "https://oauth2.googleapis.com/token"
+          AUTH_PROVIDER_X509_CERT_URL: "https://www.googleapis.com/oauth2/v1/certs"
+          CLIENT_X509_CERT_URL: "https://www.googleapis.com/robot/v1/metadata/x509"
+          UNIVERSE_DOMAIN: "googleapis.com"
