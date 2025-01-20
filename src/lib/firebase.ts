@@ -18,7 +18,7 @@ export const serviceAccount = {
 } as ServiceAccount
 
 export const app = initializeApp({
-  credential: cert(serviceAccount),
+  credential: env.NODE_ENV !== 'test' ? cert(serviceAccount) : undefined,
   projectId: env.PROJECT_ID,
 })
 
