@@ -48,7 +48,7 @@ jobs:
           DATABASE_URL: "rocha-tech-test"
           PROJECT_ID : "teste"
           PRIVATE_KEY_ID : "dwqqwdqwdqwd"
-          PRIVATE_KEY : "dqwdqwdqw"
+          PRIVATE_KEY : "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhrdvF\nJDK\n-----END PRIVATE KEY-----\n"
           CLIENT_EMAIL : "testets@teste.com"
           CLIENT_ID : "testes"
           AUTH_URI : "https://accounts.google.com/o/oauth2/auth"
