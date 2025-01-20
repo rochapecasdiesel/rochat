@@ -29,7 +29,7 @@ export class InMemoryUsersRepository implements UsersRepository {
     return user
   }
 
-  async findManyByName(name: string) {
+  async findManyByName(name: string, page: number) {
     const users = this.users.filter((user) =>
       user.userName.toLowerCase().includes(name.toLowerCase()),
     )
@@ -42,7 +42,15 @@ export class InMemoryUsersRepository implements UsersRepository {
       return []
     }
 
-    return users
+    // Definir a quantidade de itens por página
+    const itemsPerPage = 50
+
+    // Calcular o índice inicial e final para a paginação
+    const startIndex = (page - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+
+    // Retornar os itens paginados
+    return users.slice(startIndex, endIndex)
   }
 
   async update(id: string, data: UserUpdateInput) {

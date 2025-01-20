@@ -9,14 +9,15 @@ export async function getManyUsersByNameController(
 ) {
   const getManyUsersByNameScheemaQuery = z.object({
     q: z.string().optional(),
+    page: z.coerce.number().default(1),
   })
 
-  const { q } = getManyUsersByNameScheemaQuery.parse(request.query)
+  const { q, page } = getManyUsersByNameScheemaQuery.parse(request.query)
 
   const getManyUsersByNameService = makeGetManyUsersByNameService()
 
   try {
-    const response = await getManyUsersByNameService.execute(q || '')
+    const response = await getManyUsersByNameService.execute(q || '', page)
     return reply.status(200).send({ data: response })
   } catch (err) {
     if (err instanceof ResourceNotFoundError) {

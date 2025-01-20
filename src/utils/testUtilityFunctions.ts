@@ -6,7 +6,7 @@ export async function createMultipleUsers(
 ) {
   for (let i = 1; i <= userCount; i++) {
     const user = {
-      id: String(100000 + i), // Gera um ID único
+      id: String(100000 + i),
       userName: `User${i}`,
       avatarUrl: `http://example.com/avatar${i}.jpg`,
       userMessage: `Hello from User${i}!`,

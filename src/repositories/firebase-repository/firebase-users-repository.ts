@@ -80,11 +80,17 @@ export class FirebaseUsersRepository implements UsersRepository {
     } as User
   }
 
-  async findManyByName(name: string): Promise<User[]> {
+  async findManyByName(name: string, page: number): Promise<User[]> {
+    const ITEMS_PER_PAGE = 50 // Número fixo de itens por página
+
+    const offset = (page - 1) * ITEMS_PER_PAGE
+
     // Faz uma consulta na coleção de usuários para encontrar documentos cujo campo 'name' corresponda
     const querySnapshot = await this.usersCollection
       .where('userName', '>=', name) // Nomes que começam com o prefixo `name`
+      .offset(offset) // Deslocamento baseado na página
       .where('userName', '<', name + '\uf8ff') // Limite superior com sufixo especial
+      .orderBy('createdAt')
       .get()
 
     // Verifica se encontrou algum resultado
