@@ -6,7 +6,7 @@ import request from 'supertest'
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
-describe('Get Messages Controller (e2e)', () => {
+describe('Update Messages Controller (e2e)', () => {
   beforeAll(async () => {
     await app.ready()
     await clearFireStore()
