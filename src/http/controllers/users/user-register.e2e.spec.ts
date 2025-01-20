@@ -4,7 +4,7 @@ import { generateFakeJwt } from '@/utils/generate-fake-jwt'
 
 import request from 'supertest'
 
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 
 describe('Register User Controller (e2e)', () => {
   beforeAll(async () => {
@@ -14,6 +14,10 @@ describe('Register User Controller (e2e)', () => {
 
   afterAll(async () => {
     await app.close()
+    await clearFireStore()
+  })
+
+  afterEach(async () => {
     await clearFireStore()
   })
 

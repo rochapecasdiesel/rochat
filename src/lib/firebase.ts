@@ -1,6 +1,7 @@
 import { env } from '@/env'
 import { initializeApp, cert, ServiceAccount } from 'firebase-admin/app'
 import { getFirestore } from 'firebase-admin/firestore'
+import { randomUUID } from 'node:crypto'
 
 export const serviceAccount = {
   type: 'service_account',
@@ -27,6 +28,7 @@ export const db = getFirestore(app, env.DATABASE)
 if (env.NODE_ENV === 'test') {
   db.settings({
     host: 'localhost:8081', // Porta do Firestore emulador
+    projectId: randomUUID(),
     ssl: false,
   })
 }

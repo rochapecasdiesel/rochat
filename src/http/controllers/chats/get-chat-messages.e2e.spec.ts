@@ -14,6 +14,7 @@ describe('Get Messages Controller (e2e)', () => {
 
   afterAll(async () => {
     await app.close()
+    await clearFireStore()
   })
 
   it('should be able to messages by chatId', async () => {

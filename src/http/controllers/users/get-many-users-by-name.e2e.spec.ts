@@ -17,7 +17,7 @@ describe('Update User Controller (e2e)', () => {
     await clearFireStore()
   })
 
-  it('should be able to edit profile', async () => {
+  it('should be able to get many users by name', async () => {
     const token1 = generateFakeJwt({ sub: '000075' })
     const token2 = generateFakeJwt({ sub: '000076' })
 
