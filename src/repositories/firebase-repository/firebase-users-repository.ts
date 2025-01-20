@@ -202,7 +202,7 @@ export class FirebaseUsersRepository implements UsersRepository {
 
     // Consulta os itens com limite e deslocamento
     const querySnapshot = await userChatsCollectionRef
-      .orderBy('createdAt') // Ordenação (ajuste conforme necessário)
+      .orderBy('lastTimestamp') // Ordenação (ajuste conforme necessário)
       .offset(offset) // Deslocamento baseado na página
       .limit(ITEMS_PER_PAGE) // Limite de itens por página
       .get()
