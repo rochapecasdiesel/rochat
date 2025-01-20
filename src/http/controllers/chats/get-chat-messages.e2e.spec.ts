@@ -16,7 +16,7 @@ describe('Get Messages Controller (e2e)', () => {
     await app.close()
   })
 
-  it('should be able to register', async () => {
+  it('should be able to messages by chatId', async () => {
     const token1 = generateFakeJwt({ sub: '000075' })
     const token2 = generateFakeJwt({ sub: '000076' })
 
