@@ -47,7 +47,6 @@ jobs:
           JWT_SECRET: testing
           DATABASE_URL: "rocha-tech-test"
           PROJECT_ID : "teste"
-          DATABASE : "rocha-tech-test"
           PRIVATE_KEY_ID : ""
           PRIVATE_KEY : ""
           CLIENT_EMAIL : ""
