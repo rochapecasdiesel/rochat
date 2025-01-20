@@ -48,7 +48,6 @@ jobs:
           DATABASE_URL: "rocha-tech-test"
           PROJECT_ID : "teste"
           DATABASE : "rocha-tech-test"
-          PROJECT_ID : ""
           PRIVATE_KEY_ID : ""
           PRIVATE_KEY : ""
           CLIENT_EMAIL : ""
