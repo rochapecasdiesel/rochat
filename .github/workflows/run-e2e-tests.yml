@@ -3,7 +3,7 @@ name: Run E2E Tests
 on: 
   pull_request:
     branches:
-      - main
+      - main  # ou o nome da branch de destino para PRs, caso seja diferente
       - dev
 
 jobs:
@@ -37,7 +37,6 @@ jobs:
       # Iniciar emuladores do Firebase em segundo plano
       - name: Start Firebase Emulators
         run: |
-
           nohup npm run test:emulators > emulator.log 2>&1 &
           while ! nc -z localhost 8081; do   
             echo "Waiting for emulator to start..."
@@ -60,7 +59,6 @@ jobs:
           CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
           CLIENT_ID: ${{ secrets.FIREBASE_CLIENT_ID }}
 
-
       # Executar os testes E2E
       - name: Run E2E tests
         run: npm run test:e2e
@@ -76,5 +74,4 @@ jobs:
           TOKEN_URI: "https://oauth2.googleapis.com/token"
           AUTH_PROVIDER_X509_CERT_URL: "https://www.googleapis.com/oauth2/v1/certs"
           CLIENT_X509_CERT_URL: "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-pa91s%40rocha-pecas-diesel.iam.gserviceaccount.com"
-
           UNIVERSE_DOMAIN: "googleapis.com"
