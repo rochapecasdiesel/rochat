@@ -42,7 +42,11 @@ jobs:
 
       # Executar os testes E2E
       - name: Run E2E tests
-        run: npm run test:e2e
+        run: 
+          echo "PROJECT_ID: $PROJECT_ID"
+          echo "CLIENT_EMAIL: $CLIENT_EMAIL"
+          echo "CLIENT_ID: $CLIENT_ID"
+          echo "PRIVATE_KEY: ${#PRIVATE_KEY}" # Exibe apenas o comprimento da chave para segurança
         env:
           NODE_ENV: test
           JWT_SECRET: testing
