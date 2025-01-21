@@ -48,6 +48,7 @@ jobs:
           JWT_SECRET: testing
           DATABASE_URL: "rocha-tech-test"
           PROJECT_ID: "test-project"
+          PRIVATE_KEY_ID: ${{ secrets.FIREBASE_PRIVATE_KEY_ID }}
           PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
           CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
           CLIENT_ID: ${{ secrets.FIREBASE_CLIENT_ID }}
