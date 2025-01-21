@@ -11,11 +11,11 @@ export async function userRegisterController(
     userName: z.string(),
     userMessage: z.string().optional(),
     avatarUrl: z.string().optional(),
-    documentId: z.string(),
   })
 
-  const { userName, userMessage, avatarUrl, documentId } =
-    registerUserBodySchema.parse(request.body)
+  const { userName, userMessage, avatarUrl } = registerUserBodySchema.parse(
+    request.body,
+  )
 
   const usersRepository = makeRegisterUserService()
 
@@ -24,7 +24,7 @@ export async function userRegisterController(
       avatarUrl,
       userMessage,
       userName,
-      documentId,
+      documentId: request.user.sub,
     })
   } catch (err) {
     if (err instanceof UserAllreadyExistsError) {

@@ -22,13 +22,13 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-      
+
       # Configurar Java JDK 11
       - name: Setup Java JDK 11
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'temurin' # Temurin é recomendado como distribuição open-source do JDK
+          distribution: 'temurin'
 
       # Instalar dependências do projeto
       - name: Install dependencies
@@ -37,13 +37,41 @@ jobs:
       # Iniciar emuladores do Firebase em segundo plano
       - name: Start Firebase Emulators
         run: |
-          nohup npm run test:emulators & 
-          sleep 10 # Aguarda 10 segundos para garantir que os emuladores estejam prontos
-      
+          nohup npm run test:emulators > emulator.log 2>&1 &
+          while ! nc -z localhost 8081; do   
+            echo "Waiting for emulator to start..."
+            sleep 2
+          done
+          echo "Emulator is ready!"
+
+      # Verificar variáveis de ambiente
+      - name: Verify environment variables
+        run: |
+          echo "PROJECT_ID: $PROJECT_ID"
+          echo "CLIENT_EMAIL: $CLIENT_EMAIL"
+          echo "CLIENT_ID: $CLIENT_ID"
+          echo "PRIVATE_KEY length: ${#PRIVATE_KEY}" # Exibe apenas o comprimento da chave para segurança
+        env:
+          NODE_ENV: test
+          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          PRIVATE_KEY_ID: ${{ secrets.FIREBASE_PRIVATE_KEY_ID }}
+          PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+          CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+          CLIENT_ID: ${{ secrets.FIREBASE_CLIENT_ID }}
+
       # Executar os testes E2E
       - name: Run E2E tests
         run: npm run test:e2e
         env:
-          JWT_SECRET: testing
-          DATABASE_URL: "rocha-tech-test"
-          PROJECT_ID : "teste"
+          NODE_ENV: test
+          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          JWT_SECRET: test
+          PRIVATE_KEY_ID: ${{ secrets.FIREBASE_PRIVATE_KEY_ID }}
+          PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+          CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+          CLIENT_ID: ${{ secrets.FIREBASE_CLIENT_ID }}
+          AUTH_URI: "https://accounts.google.com/o/oauth2/auth"
+          TOKEN_URI: "https://oauth2.googleapis.com/token"
+          AUTH_PROVIDER_X509_CERT_URL: "https://www.googleapis.com/oauth2/v1/certs"
+          CLIENT_X509_CERT_URL: "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-pa91s%40rocha-pecas-diesel.iam.gserviceaccount.com"
+          UNIVERSE_DOMAIN: "googleapis.com"

@@ -15,6 +15,7 @@ describe('Update User Controller (e2e)', () => {
 
   afterAll(async () => {
     await app.close()
+    await clearFireStore()
   })
 
   it('should be able to edit profile', async () => {

@@ -7,6 +7,9 @@
     "start:dev": "tsx watch src/server.ts",
     "start": "node build/server.js",
     "build": "tsup src --out-dir build",
+    "test:create-firebase-environment": "npm link ./vitest-environment",
+    "test:install-firebase-environment": "npm link vitest-environment",
+    
     "test": " vitest run --dir src/services",
     "test:watch": "vitest --dir src/services",
     "test:emulators": "npx firebase emulators:start",
