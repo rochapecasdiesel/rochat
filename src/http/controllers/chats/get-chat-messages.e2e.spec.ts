@@ -70,10 +70,10 @@ describe('Get Messages Controller (e2e)', () => {
 
     expect(response.status).toBe(200)
     expect(response.body.data.messages).toHaveLength(2)
-    expect(response.body.data.messages[0].text).toBe(
+    expect(response.body.data.messages[1].text).toBe(
       messageResponse2.body.data.message.text,
     )
-    expect(response.body.data.messages[1].text).toBe(
+    expect(response.body.data.messages[0].text).toBe(
       messageResponse1.body.data.message.text,
     )
   })
