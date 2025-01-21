@@ -9,7 +9,6 @@
     "build": "tsup src --out-dir build",
     "test:create-firebase-environment": "npm link ./vitest-environment",
     "test:install-firebase-environment": "npm link vitest-environment",
-    
     "test": " vitest run --dir src/services",
     "test:watch": "vitest --dir src/services",
     "test:emulators": "npx firebase emulators:start",
@@ -20,6 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fastify/cors": "10.0.2",
     "@fastify/jwt": "9.0.2",
     "dotenv": "^16.4.7",
     "fastify": "^5.2.1",

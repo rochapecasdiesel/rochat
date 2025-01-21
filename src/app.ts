@@ -1,10 +1,18 @@
 import fastify from 'fastify'
 import { appRoutes } from './http/routes/app-routes'
 import { ZodError } from 'zod'
+import fastifyCors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import { env } from './env'
 
 export const app = fastify()
+
+app.register(fastifyCors, {
+  origin: true, // Aceita todas as origens
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], // Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
+  credentials: true, // Permitir credenciais (cookies)
+})
 
 // Registrando o fastify-jwt
 app.register(fastifyJwt, {

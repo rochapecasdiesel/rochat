@@ -44,7 +44,6 @@ describe('Create Message Service', () => {
       chatId: chatResponse.id,
       altered: false,
       deleted: false,
-      recieverId: '100002',
       senderId: '100001',
       source: 'internal',
       text: 'Hello World!!',
@@ -54,7 +53,6 @@ describe('Create Message Service', () => {
     expect(message).toEqual(
       expect.objectContaining({
         senderId: '100001',
-        recieverId: '100002',
         text: 'Hello World!!',
         altered: false,
         deleted: false,
@@ -95,31 +93,9 @@ describe('Create Message Service', () => {
         chatId: 'nonexistent-chat-id',
         altered: false,
         deleted: false,
-        recieverId: '100002',
         senderId: '100001',
         source: 'internal',
         text: 'This will fail',
-      }),
-    ).rejects.toBeInstanceOf(ResourceNotFoundError)
-  })
-
-  it('should throw an error if participants are invalid', async () => {
-    // Cria um chat com participantes diferentes
-    const chatResponse = await chatRepository.create({
-      assingnedUser: 'User1',
-      participants: ['100003', '100004'], // Participantes diferentes
-      status: 'open',
-    })
-
-    await expect(
-      sut.execute({
-        chatId: chatResponse.id,
-        altered: false,
-        deleted: false,
-        recieverId: '100002',
-        senderId: '100001',
-        source: 'internal',
-        text: 'Invalid participants',
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })

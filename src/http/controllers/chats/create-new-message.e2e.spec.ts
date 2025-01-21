@@ -51,7 +51,7 @@ describe('Create Messages Controller (e2e)', () => {
       .set('Authorization', `Bearer ${token1}`)
       .send({
         source: 'internal',
-        recieverId: '000076',
+        recieverId: ['000076'],
         text: 'Hello, Jane!',
       })
 
