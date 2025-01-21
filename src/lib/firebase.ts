@@ -7,7 +7,7 @@ export const serviceAccount = {
   type: 'service_account',
   project_id: env.PROJECT_ID,
   private_key_id: env.PRIVATE_KEY_ID,
-  private_key: env.PRIVATE_KEY,
+  private_key: env.PRIVATE_KEY.replace(/\\n/g, '\n'),
   client_email: env.CLIENT_EMAIL,
   client_id: env.CLIENT_ID,
   auth_uri: env.AUTH_URI,

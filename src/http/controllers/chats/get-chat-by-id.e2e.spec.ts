@@ -68,8 +68,6 @@ describe('Get Chat By Id Controller (e2e)', () => {
       .get(`/chats/${chatResponse.body.data.chat.id}`)
       .set('Authorization', `Bearer ${token1}`)
 
-    console.log(response.body.data.chat.lastMessage)
-
     expect(response.status).toBe(200)
     expect(response.body.data.chat.lastMessage).equals('Hello, John!')
   })
