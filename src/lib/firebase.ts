@@ -17,6 +17,7 @@ export const serviceAccount = {
   universe_domain: env.UNIVERSE_DOMAIN,
 } as ServiceAccount
 
+console.log(env.PRIVATE_KEY)
 export const app = initializeApp({
   credential: cert(serviceAccount),
   projectId: env.PROJECT_ID,
