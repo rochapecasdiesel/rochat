@@ -4,8 +4,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
-    isolate: true, // Garante isolamento entre os testes
-    globals: true,
-    environment: 'node',
+    environmentMatchGlobs: [['src/http/controllers/**', 'vitest-environment']],
+    dir: 'src', // Essa linha
   },
 })
