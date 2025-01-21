@@ -8,7 +8,6 @@ export interface Alterations {
 export interface Messages {
   id: string
   senderId: string
-  recieverId: string
   text: string
   source: 'internal' | 'external'
   createAt: Date
@@ -21,7 +20,6 @@ export interface Messages {
 export interface MessagesCreateInput {
   id?: string
   senderId: string
-  recieverId: string
   text: string
   source: 'internal' | 'external'
   createAt?: Date

@@ -19,7 +19,7 @@ export async function createNewController(
     const registerChatService = makeRegisterChatService()
 
     const chat = await registerChatService.execute({
-      participants,
+      participants: [request.user.sub, ...participants],
       assingnedUser: request.user.sub,
       status: 'assigned',
     })

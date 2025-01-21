@@ -9,7 +9,6 @@ export async function createNewMessageController(
 ) {
   const newMessageBodySchema = z.object({
     source: z.enum(['external', 'internal']),
-    recieverId: z.string().min(6),
     text: z.string(),
   })
 
@@ -19,7 +18,7 @@ export async function createNewMessageController(
 
   const { chatId } = newMessageParamsSchema.parse(request.params)
 
-  const { source, recieverId, text } = newMessageBodySchema.parse(request.body)
+  const { source, text } = newMessageBodySchema.parse(request.body)
 
   try {
     const createMessageService = makeCreateMessageService()
@@ -29,7 +28,6 @@ export async function createNewMessageController(
       chatId,
       deleted: false,
       source,
-      recieverId,
       senderId: request.user.sub,
       text,
     })

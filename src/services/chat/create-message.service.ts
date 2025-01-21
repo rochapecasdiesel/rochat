@@ -6,7 +6,6 @@ import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 interface CreateMessageServiceRequest {
   chatId: string
   senderId: string
-  recieverId: string
   text: string
   source: 'internal' | 'external'
   deleted: boolean
@@ -27,7 +26,6 @@ export class CreateMessageService {
     altered,
     chatId,
     deleted,
-    recieverId,
     senderId,
     source,
     text,
@@ -39,19 +37,10 @@ export class CreateMessageService {
       throw new ResourceNotFoundError()
     }
 
-    const hasValidParticipants = isChatAllreadyExists.participants.every(
-      (value) => [senderId, recieverId].includes(value),
-    )
-
-    if (!hasValidParticipants) {
-      throw new ResourceNotFoundError()
-    }
-
     // Criação da mensagem
     const message = await this.chatRepository.createMessagem(chatId, {
       altered,
       deleted,
-      recieverId,
       senderId,
       source,
       text,

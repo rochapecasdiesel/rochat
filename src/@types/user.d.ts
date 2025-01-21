@@ -5,6 +5,14 @@ interface UserChat {
   lastTimestamp: Date
   assignedUser: 'assigned' | 'open'
   id: string
+  profiles: {
+    id: string
+    userName: string
+    userMessage: string
+    createdAt: Date
+    updatedAt: Date
+    avatarUrl: string
+  }[]
 }
 
 export interface User {
