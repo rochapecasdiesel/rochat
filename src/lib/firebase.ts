@@ -17,7 +17,7 @@ export const serviceAccount = {
   universe_domain: env.UNIVERSE_DOMAIN,
 } as ServiceAccount
 
-console.log(env.PRIVATE_KEY.length)
+console.log('Private Key Preview: ', process.env.PRIVATE_KEY?.slice(0, 50)) // Exibe uma parte da chave sem expor completamente
 
 export const app = initializeApp({
   credential: cert(serviceAccount),
