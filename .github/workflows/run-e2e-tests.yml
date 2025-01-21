@@ -40,18 +40,27 @@ jobs:
           done
           echo "Emulator is ready!"
 
-      # Executar os testes E2E
-      - name: Run E2E tests
-        run: 
+      # Verificar variáveis de ambiente
+      - name: Verify environment variables
+        run: |
           echo "PROJECT_ID: $PROJECT_ID"
           echo "CLIENT_EMAIL: $CLIENT_EMAIL"
           echo "CLIENT_ID: $CLIENT_ID"
-          echo "PRIVATE_KEY: ${#PRIVATE_KEY}" # Exibe apenas o comprimento da chave para segurança
+          echo "PRIVATE_KEY length: ${#PRIVATE_KEY}" # Exibe apenas o comprimento da chave para segurança
         env:
           NODE_ENV: test
-          JWT_SECRET: testing
-          DATABASE_URL: "rocha-tech-test"
-          PROJECT_ID: "test-project"
+          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          PRIVATE_KEY_ID: ${{ secrets.FIREBASE_PRIVATE_KEY_ID }}
+          PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+          CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+          CLIENT_ID: ${{ secrets.FIREBASE_CLIENT_ID }}
+
+      # Executar os testes E2E
+      - name: Run E2E tests
+        run: npm run test:e2e
+        env:
+          NODE_ENV: test
+          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
           PRIVATE_KEY_ID: ${{ secrets.FIREBASE_PRIVATE_KEY_ID }}
           PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
           CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
