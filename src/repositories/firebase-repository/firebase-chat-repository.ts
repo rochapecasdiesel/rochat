@@ -152,7 +152,7 @@ export class FirebaseChatRepository implements ChatRepository {
 
     // Ordena as mensagens por data de criação
     let query = messagesCollectionRef
-      .orderBy('createAt', 'desc')
+      .orderBy('createAt', 'asc')
       .limit(itemsPerPage)
 
     // Calcula o ponto inicial da página atual
