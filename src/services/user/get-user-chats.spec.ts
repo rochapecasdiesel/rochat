@@ -19,7 +19,7 @@ async function createChatsForUser(
       assignedUser: `assigned`,
       lastMessage: `Hello from chat ${i + 1}`,
       lastTimestamp: new Date(),
-      participantId: [userId, `user${i + 1}`],
+      participantId: [userId, i + 1 < 10 ? `10000${i + 1}` : `1000${i + 1}`],
       id: randomUUID(),
     })
   }

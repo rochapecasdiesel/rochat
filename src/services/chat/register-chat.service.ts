@@ -89,7 +89,6 @@ export class CreateChatService {
             lastTimestamp: new Date(),
             participantId: participants,
             chatId: chat.id,
-            profiles: [...participantsInDB],
           } as UserChat
 
           await this.usersRepository.createUserChat(participant.id, newUserChat)
