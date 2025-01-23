@@ -90,7 +90,7 @@ export class FirebaseUsersRepository implements UsersRepository {
       .where('userName', '>=', name) // Nomes que começam com o prefixo `name`
       .offset(offset) // Deslocamento baseado na página
       .where('userName', '<', name + '\uf8ff') // Limite superior com sufixo especial
-      .orderBy('createdAt')
+      // .orderBy('createdAt')
       .get()
 
     // Verifica se encontrou algum resultado
