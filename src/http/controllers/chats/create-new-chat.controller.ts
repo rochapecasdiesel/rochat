@@ -28,6 +28,7 @@ export async function createNewController(
     if (err instanceof ChatAlreadyExist) {
       return reply.status(400).send({
         message: err.message,
+        chatId: err.chat.id,
       })
     }
 

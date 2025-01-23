@@ -65,7 +65,7 @@ export class CreateChatService {
 
     // Se já existir um chat deve se retornar um erro
     if (isChatExist) {
-      throw new ChatAlreadyExist()
+      throw new ChatAlreadyExist(isChatExist)
     }
 
     const chat = await this.chatRepository.create({
