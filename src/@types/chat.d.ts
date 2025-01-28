@@ -10,7 +10,7 @@ export interface Messages {
   senderId: string
   text: string
   source: 'internal' | 'external'
-  createAt: Date
+  createdAt: Date
   updatedAt: Date
   deleted: boolean
   altered: boolean
@@ -22,7 +22,7 @@ export interface MessagesCreateInput {
   senderId: string
   text: string
   source: 'internal' | 'external'
-  createAt?: Date
+  createdAt?: Date
   updatedAt?: Date
   deleted: boolean
   altered: boolean
@@ -36,7 +36,7 @@ export interface Chat {
   participants: string[]
   assingnedUser: string
   status: 'assigned' | 'open'
-  createAt: Date
+  createdAt: Date
   updatedAt: Date
   lastMessage: string
   lastTimestamp: Date
@@ -48,7 +48,7 @@ export interface ChatCreateInput {
   participants: string[]
   assingnedUser: string
   status: 'assigned' | 'open'
-  createAt?: Date
+  createdAt?: Date
   updatedAt?: Date
   lastMessage?: string
   lastTimestamp?: Date

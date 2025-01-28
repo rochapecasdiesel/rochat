@@ -56,10 +56,10 @@ export class UpdateMessageTextService {
       },
     })
 
-    const oldMessageDate = oldMessage?.createAt
-      ? oldMessage.createAt instanceof Date
-        ? oldMessage.createAt
-        : timestampToDate(oldMessage.createAt as Timestamp)
+    const oldMessageDate = oldMessage?.createdAt
+      ? oldMessage.createdAt instanceof Date
+        ? oldMessage.createdAt
+        : timestampToDate(oldMessage.createdAt as Timestamp)
       : null // Define um valor padrão quando createAt é undefined
 
     const chatLastDate = isChatAllreadyExists?.lastTimestamp
@@ -87,14 +87,14 @@ export class UpdateMessageTextService {
               userId: id,
               data: {
                 lastMessage: message.text,
-                lastTimestamp: message.createAt,
+                lastTimestamp: message.createdAt,
               },
             })
           }
 
           await this.chatRepository.updateChat(chatId, {
             lastMessage: message.text,
-            lastTimestamp: message.createAt,
+            lastTimestamp: message.createdAt,
           })
         }),
       )

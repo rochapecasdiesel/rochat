@@ -15,7 +15,7 @@ export class InMemoryChatRepository implements ChatRepository {
     const chat: ChatCreateInput = {
       ...data,
       id: data.id ? data.id : randomUUID(),
-      createAt: data.createAt ? data.createAt : new Date(),
+      createdAt: data.createdAt ? data.createdAt : new Date(),
     }
     this.chats.push(chat as Chat)
     return chat as Chat
@@ -77,7 +77,7 @@ export class InMemoryChatRepository implements ChatRepository {
       // Adiciona a nova mensagem
       this.chats[index].messages.push(message)
       this.chats[index].lastMessage = message.text
-      this.chats[index].lastTimestamp = message.createAt
+      this.chats[index].lastTimestamp = message.createdAt
     }
 
     return message

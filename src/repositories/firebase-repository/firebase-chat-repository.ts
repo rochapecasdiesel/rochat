@@ -116,7 +116,7 @@ export class FirebaseChatRepository implements ChatRepository {
     const documentData: Messages = {
       ...data,
       id: messageId,
-      createAt: new Date(),
+      createdAt: new Date(),
       updatedAt: new Date(),
       deleted: false,
       altered: false,
@@ -129,7 +129,7 @@ export class FirebaseChatRepository implements ChatRepository {
     // Atualiza os campos 'lastMessage' e 'lastTimestamp' no documento do chat
     await chatDocRef.update({
       lastMessage: documentData.text,
-      lastTimestamp: documentData.createAt,
+      lastTimestamp: documentData.createdAt,
     })
 
     return documentData
@@ -152,7 +152,7 @@ export class FirebaseChatRepository implements ChatRepository {
 
     // Ordena as mensagens por data de criação
     let query = messagesCollectionRef
-      .orderBy('createAt', 'asc')
+      .orderBy('createdAt', 'asc')
       .limit(itemsPerPage)
 
     // Calcula o ponto inicial da página atual
@@ -161,7 +161,7 @@ export class FirebaseChatRepository implements ChatRepository {
 
       // Obtem o último documento da página anterior
       const previousPageSnapshot = await messagesCollectionRef
-        .orderBy('createAt', 'desc')
+        .orderBy('createdAt', 'desc')
         .limit(offset)
         .get()
 

@@ -60,7 +60,7 @@ export class CreateMessageService {
             userId: id,
             data: {
               lastMessage: message.text,
-              lastTimestamp: message.createAt,
+              lastTimestamp: message.createdAt,
             },
           })
         }
