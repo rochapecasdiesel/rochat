@@ -79,7 +79,7 @@ describe('Delete Message Service', () => {
       expect.objectContaining({
         chatId: chatResponse.id,
         lastMessage: 'message deleted',
-        lastTimestamp: message.createAt,
+        lastTimestamp: message.createdAt,
       }),
     )
 
@@ -87,7 +87,7 @@ describe('Delete Message Service', () => {
       expect.objectContaining({
         chatId: chatResponse.id,
         lastMessage: 'message deleted',
-        lastTimestamp: message.createAt,
+        lastTimestamp: message.createdAt,
       }),
     )
   })
@@ -116,7 +116,6 @@ describe('Delete Message Service', () => {
       {
         altered: false,
         deleted: false,
-        recieverId: '100002',
         senderId: '100001',
         source: 'internal',
         text: 'Hello World!!',
@@ -146,7 +145,6 @@ describe('Delete Message Service', () => {
       {
         altered: false,
         deleted: false,
-        recieverId: '100002',
         senderId: '100001',
         source: 'internal',
         text: 'Message to be deleted',

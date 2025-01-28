@@ -74,7 +74,7 @@ describe('Create Message Service', () => {
       expect.objectContaining({
         chatId: chatResponse.id,
         lastMessage: message.text,
-        lastTimestamp: message.createAt,
+        lastTimestamp: message.createdAt,
       }),
     )
 
@@ -82,7 +82,7 @@ describe('Create Message Service', () => {
       expect.objectContaining({
         chatId: chatResponse.id,
         lastMessage: message.text,
-        lastTimestamp: message.createAt,
+        lastTimestamp: message.createdAt,
       }),
     )
   })

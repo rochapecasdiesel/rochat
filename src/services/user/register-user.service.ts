@@ -30,7 +30,7 @@ export class RegisterUserService {
 
     const user = await this.userRepository.create({
       id: documentId,
-      userName,
+      userName: userName.toLocaleLowerCase(),
       avatarUrl,
       userMessage,
     })

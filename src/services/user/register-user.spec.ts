@@ -21,7 +21,7 @@ describe('Register user Service', () => {
       userMessage: 'Hello, world!',
     })
 
-    expect(user.userName).toEqual('John Doe')
+    expect(user.userName).toEqual('john doe')
   })
 
   it('should not be able to register a user with same id', async () => {

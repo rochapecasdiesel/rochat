@@ -26,7 +26,7 @@ describe('Get user Service', () => {
 
     const { user } = await sut.execute('000075')
 
-    expect(user.userName).toEqual('John Doe')
+    expect(user.userName).toEqual('john doe')
   })
 
   it('should not be able to get a user', async () => {
