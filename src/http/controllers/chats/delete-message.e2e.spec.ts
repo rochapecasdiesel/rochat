@@ -63,6 +63,7 @@ describe('Delete Messages Controller (e2e)', () => {
       .send({
         userId: messageResponse1.body.data.message.userId,
       })
+
     const response = await request(app.server)
       .get(`/chats/${chatResponse.body.data.chat.id}/messages`)
       .set('Authorization', `Bearer ${token1}`)

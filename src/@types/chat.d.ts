@@ -15,6 +15,7 @@ export interface Messages {
   deleted: boolean
   altered: boolean
   alterations?: Alterations[]
+  replyTo?: string
 }
 
 export interface MessagesCreateInput {
@@ -27,6 +28,7 @@ export interface MessagesCreateInput {
   deleted: boolean
   altered: boolean
   alterations?: Alterations[]
+  replyTo?: string
 }
 
 export interface MessagesUpdateInput extends Partial<Messages> {}
