@@ -25,7 +25,7 @@ describe('Update User Controller (e2e)', () => {
       .post('/users')
       .set('Authorization', `Bearer ${token2}`)
       .send({
-        userName: 'Jane Doe',
+        userName: 'jane doe',
         userMessage: 'test',
         avatarUrl: '123456',
       })
@@ -34,7 +34,7 @@ describe('Update User Controller (e2e)', () => {
       .post('/users')
       .set('Authorization', `Bearer ${token1}`)
       .send({
-        userName: 'John Doe',
+        userName: 'john doe',
         userMessage: 'test',
         avatarUrl: '123456',
       })
@@ -45,7 +45,7 @@ describe('Update User Controller (e2e)', () => {
 
     expect(response.statusCode).toBe(200)
     expect(response.body.data.users).toHaveLength(2)
-    expect(response.body.data.users[1].userName).toBe('John Doe')
-    expect(response.body.data.users[0].userName).toBe('Jane Doe')
+    expect(response.body.data.users[1].userName).toBe('john doe')
+    expect(response.body.data.users[0].userName).toBe('jane doe')
   })
 })

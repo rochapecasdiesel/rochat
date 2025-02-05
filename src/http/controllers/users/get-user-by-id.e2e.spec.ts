@@ -24,7 +24,7 @@ describe('Get User By Id Controller (e2e)', () => {
       .post('/users')
       .set('Authorization', `Bearer ${token1}`)
       .send({
-        userName: 'John Doe',
+        userName: 'john doe',
         userMessage: 'test',
         avatarUrl: '123456',
       })
@@ -38,7 +38,7 @@ describe('Get User By Id Controller (e2e)', () => {
     expect(userChatsResponse.body.data.user).toEqual(
       expect.objectContaining({
         id: '000075',
-        userName: 'John Doe',
+        userName: 'john doe',
       }),
     )
   })

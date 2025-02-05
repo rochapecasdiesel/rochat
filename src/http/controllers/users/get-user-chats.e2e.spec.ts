@@ -25,7 +25,7 @@ describe('Get User Chats Controller (e2e)', () => {
       .post('/users')
       .set('Authorization', `Bearer ${token1}`)
       .send({
-        userName: 'John Doe',
+        userName: 'john doe',
         userMessage: 'test',
         avatarUrl: '123456',
       })
@@ -34,7 +34,7 @@ describe('Get User Chats Controller (e2e)', () => {
       .post('/users')
       .set('Authorization', `Bearer ${token2}`)
       .send({
-        userName: 'Jane Doe',
+        userName: 'jane doe',
         userMessage: 'test',
         avatarUrl: '123456',
       })

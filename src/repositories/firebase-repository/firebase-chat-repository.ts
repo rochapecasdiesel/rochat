@@ -121,6 +121,7 @@ export class FirebaseChatRepository implements ChatRepository {
       deleted: false,
       altered: false,
       alterations: data.alterations ?? [],
+      replyTo: data.replyTo ?? '',
     }
 
     // Adiciona a nova mensagem como um documento na subcoleção 'messages'

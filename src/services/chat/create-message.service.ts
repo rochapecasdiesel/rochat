@@ -10,6 +10,7 @@ interface CreateMessageServiceRequest {
   source: 'internal' | 'external'
   deleted: boolean
   altered: boolean
+  replyTo?: string
 }
 
 interface CreateMessageServiceResponse {
@@ -29,6 +30,7 @@ export class CreateMessageService {
     senderId,
     source,
     text,
+    replyTo,
   }: CreateMessageServiceRequest): Promise<CreateMessageServiceResponse> {
     // Verifica se o chat existe
     const isChatAllreadyExists = await this.chatRepository.findById(chatId)
@@ -44,6 +46,7 @@ export class CreateMessageService {
       senderId,
       source,
       text,
+      replyTo,
     })
 
     // Atualiza os chats de cada participante

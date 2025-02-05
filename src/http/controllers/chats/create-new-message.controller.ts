@@ -10,6 +10,7 @@ export async function createNewMessageController(
   const newMessageBodySchema = z.object({
     source: z.enum(['external', 'internal']),
     text: z.string(),
+    replyTo: z.string().uuid().optional(),
   })
 
   const newMessageParamsSchema = z.object({
@@ -18,7 +19,7 @@ export async function createNewMessageController(
 
   const { chatId } = newMessageParamsSchema.parse(request.params)
 
-  const { source, text } = newMessageBodySchema.parse(request.body)
+  const { source, text, replyTo } = newMessageBodySchema.parse(request.body)
 
   try {
     const createMessageService = makeCreateMessageService()
@@ -30,6 +31,7 @@ export async function createNewMessageController(
       source,
       senderId: request.user.sub,
       text,
+      replyTo,
     })
 
     return reply.status(201).send({ data: message })
