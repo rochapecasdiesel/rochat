@@ -11,7 +11,7 @@ interface CreateChatServiceRequest {
   participants: string[]
   assingnedUser: string
   status: 'assigned' | 'open'
-  createAt?: Date
+  createdAt?: Date
   updatedAt?: Date
   lastMessage?: string
   lastTimestamp?: Date
@@ -33,7 +33,7 @@ export class CreateChatService {
     participants,
     assingnedUser,
     status,
-    createAt,
+    createdAt,
     updatedAt,
     lastMessage,
     lastTimestamp,
@@ -73,7 +73,7 @@ export class CreateChatService {
       participants,
       assingnedUser,
       status,
-      createAt,
+      createdAt,
       updatedAt,
       lastMessage,
       lastTimestamp,

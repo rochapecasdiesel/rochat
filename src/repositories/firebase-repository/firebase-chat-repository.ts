@@ -20,6 +20,7 @@ export class FirebaseChatRepository implements ChatRepository {
       participants: data.participants,
       status: data.status,
       assingnedUser: data.assingnedUser,
+      lastSeenAt: data.lastSeenAt ?? null,
     }
 
     // Criação do documento principal na coleção "chats"
@@ -122,6 +123,7 @@ export class FirebaseChatRepository implements ChatRepository {
       altered: false,
       alterations: data.alterations ?? [],
       replyTo: data.replyTo ?? '',
+      seenAt: data.seenAt ?? null,
     }
 
     // Adiciona a nova mensagem como um documento na subcoleção 'messages'
@@ -239,6 +241,7 @@ export class FirebaseChatRepository implements ChatRepository {
       originalMessage: messageData.text,
       timestamp: new Date(),
       deleted: messageData.deleted,
+      seenAt: messageData.seenAt ?? null,
     }
 
     // Atualiza os campos da mensagem
