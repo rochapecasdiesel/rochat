@@ -1,5 +1,5 @@
 import { ChatRepository } from '@/repositories/chat-repository'
-import { Chat, Messages } from '@/@types/chat'
+import { Messages } from '@/@types/chat'
 import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 import { Timestamp } from 'firebase-admin/firestore'
 import { PermissionDeniedError } from '../erros/permission-denied-error'
@@ -12,7 +12,6 @@ interface UpdateSeenMessageServiceRequest {
 
 interface UpdateSeenMessageServiceResponse {
   messages: Messages[]
-  chat: Chat
 }
 
 export class UpdateSeenMessageService {
@@ -57,27 +56,8 @@ export class UpdateSeenMessageService {
       messages.push(message)
     }
 
-    const lastMessage = messages.sort((a, b) => {
-      const dateA =
-        a.createdAt instanceof Timestamp
-          ? a.createdAt.toDate()
-          : (a.createdAt as Date)
-
-      const dateB =
-        b.createdAt instanceof Timestamp
-          ? b.createdAt.toDate()
-          : (b.createdAt as Date)
-
-      return dateA.getTime() - dateB.getTime()
-    })[messages.length - 1]
-
-    const chat = await this.chatRepository.updateChat(chatId, {
-      lastSeenAt: lastMessage.seenAt,
-    })
-
     return {
       messages,
-      chat,
     }
   }
 }

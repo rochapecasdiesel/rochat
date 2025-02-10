@@ -5,7 +5,6 @@ export interface Alterations {
   originalMessage: string
   timestamp: Date
   deleted: boolean
-  seenAt: Timestamp | null
 }
 
 export interface Messages {

@@ -3,7 +3,6 @@ import { describe, beforeEach, it, expect } from 'vitest'
 import { InMemoryUsersRepository } from '@/repositories/in-memory-repository/in-memory-users-repository'
 import { createMultipleUsers } from '../../utils/testUtilityFunctions'
 import { UpdateSeenMessageService } from './update-seen-at.service'
-import { Timestamp } from 'firebase-admin/firestore'
 import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 import { PermissionDeniedError } from '../erros/permission-denied-error'
 
@@ -39,13 +38,13 @@ describe('Update Seen at Service', () => {
       },
     )
 
-    const { chat } = await sut.execute({
+    const { messages } = await sut.execute({
       chatId: chatResponse.id,
       messagesId: [messageResponse.id],
       userId: '100002',
     })
 
-    expect(chat.lastSeenAt).toBeInstanceOf(Timestamp)
+    expect(messages).toHaveLength(1)
   })
 
   it('should not be able to update seen at, with invalid chat id', async () => {
