@@ -139,6 +139,7 @@ export class InMemoryChatRepository implements ChatRepository {
       originalMessage: originalMessage.text, // Mantém a mensagem original
       timestamp: new Date(),
       deleted: originalMessage.deleted,
+      seenAt: originalMessage.seenAt,
     })
 
     // Substitui a mensagem antiga pela nova mensagem

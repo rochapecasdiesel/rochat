@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase-admin/firestore'
+
 interface UserChat {
   participantId: string[]
   lastMessage: string

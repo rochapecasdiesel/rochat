@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase-admin/firestore'
+
 export interface Alterations {
   id: string
   originalMessage: string
@@ -16,6 +18,7 @@ export interface Messages {
   altered: boolean
   alterations?: Alterations[]
   replyTo?: string
+  seenAt: Timestamp | null
 }
 
 export interface MessagesCreateInput {
@@ -27,6 +30,7 @@ export interface MessagesCreateInput {
   updatedAt?: Date
   deleted: boolean
   altered: boolean
+  seenAt?: Timestamp | null
   alterations?: Alterations[]
   replyTo?: string
 }
@@ -42,6 +46,7 @@ export interface Chat {
   updatedAt: Date
   lastMessage: string
   lastTimestamp: Date
+  lastSeenAt: Timestamp | null
   messages: Messages[]
 }
 
@@ -54,6 +59,7 @@ export interface ChatCreateInput {
   updatedAt?: Date
   lastMessage?: string
   lastTimestamp?: Date
+  lastSeenAt?: Timestamp | null
   messages?: Messages[]
 }
 
