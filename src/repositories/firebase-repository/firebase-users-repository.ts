@@ -5,7 +5,6 @@ import {
   UserChat,
   UserCreateInput,
   UserNotification,
-  UserNotificationCreateInput,
   UserUpdateInput,
 } from '@/@types/user'
 import { randomUUID } from 'node:crypto'
@@ -258,7 +257,7 @@ export class FirebaseUsersRepository implements UsersRepository {
 
   async postUserNotification(
     userId: string,
-    data: UserNotificationCreateInput, // Usa o novo tipo de entrada
+    data: UserNotification, // Usa o novo tipo de entrada
   ): Promise<UserNotification> {
     const userDocRef = this.usersCollection.doc(userId)
     const userDoc = await userDocRef.get()
