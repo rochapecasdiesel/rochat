@@ -207,9 +207,17 @@ export class InMemoryUsersRepository implements UsersRepository {
       this.users[userIndex].userNotifications = []
     }
 
-    this.users[userIndex].userNotifications.push(data)
+    // Gera um notificationId se não existir e define createdAt automaticamente
+    const notificationData: UserNotification = {
+      ...data,
+      notificationId: data.notificationId || randomUUID(),
+      createdAt: new Date(), // NOVO: Define o campo createdAt
+      seen: data.seen ?? false, // Garante que seen seja definido, default false
+    }
 
-    return Promise.resolve(data)
+    this.users[userIndex].userNotifications.push(notificationData)
+
+    return Promise.resolve(notificationData)
   }
 
   async getUserNotifications(userId: string): Promise<UserNotification[]> {
@@ -228,17 +236,15 @@ export class InMemoryUsersRepository implements UsersRepository {
   async getNotSeenUserNotification(
     userId: string,
   ): Promise<UserNotification[]> {
-    // Localiza o usuário pelo ID
     const user = this.users.find((user) => user.id === userId)
 
-    // Lança erro caso o usuário não seja encontrado
     if (!user) {
       throw new Error('Usuário não encontrado')
     }
 
-    // Retorna as notificações ou um array vazio caso não existam
+    // Filtra notificações onde seen é false
     return (user.userNotifications ?? []).filter(
-      (notification) => notification.seenAt === undefined,
+      (notification) => notification.seen === false,
     )
   }
 
@@ -267,22 +273,21 @@ export class InMemoryUsersRepository implements UsersRepository {
     notificationId: string,
     seenAt: Date,
   ): Promise<UserNotification> {
-    const user = this.users.find((user) => user.id === userId) // Busca o usuário
+    const user = this.users.find((user) => user.id === userId)
     if (!user) {
-      throw new Error('Usuário não encontrado') // Erro se usuário não existir
+      throw new Error('Usuário não encontrado')
     }
-    // Verifica se o usuário possui notificações
     if (!user.userNotifications) {
-      throw new Error('Notificações do usuário não encontradas') // Erro se não houver notificações
+      throw new Error('Notificações do usuário não encontradas')
     }
-    // Procura a notificação pelo notificationId
     const index = user.userNotifications.findIndex(
       (notif) => notif.notificationId === notificationId,
     )
     if (index === -1) {
-      throw new Error('Notificação não encontrada') // Erro se notificação não existir
+      throw new Error('Notificação não encontrada')
     }
-    // Alterado: atualiza o campo seenAt da notificação encontrada
+    // Atualiza os campos: marca como vista e atribui seenAt
+    user.userNotifications[index].seen = true
     user.userNotifications[index].seenAt = seenAt
     return user.userNotifications[index]
   }

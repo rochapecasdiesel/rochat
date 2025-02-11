@@ -45,4 +45,3 @@ export interface UserCreateInput {
 
 export interface UserUpdateInput extends Partial<User> {}
 export interface UserChatUpdate extends Partial<UserChat> {}
-export type UserNotificationCreateInput = Omit<UserNotification, 'createdAt'>
