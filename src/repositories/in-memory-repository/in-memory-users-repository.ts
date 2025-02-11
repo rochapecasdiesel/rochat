@@ -1,4 +1,10 @@
-import { User, UserChat, UserCreateInput, UserUpdateInput } from '@/@types/user'
+import {
+  User,
+  UserChat,
+  UserCreateInput,
+  UserNotification,
+  UserUpdateInput,
+} from '@/@types/user'
 import { UpdateUserChat, UsersRepository } from '../users-repository'
 import { randomUUID } from 'node:crypto'
 
@@ -184,5 +190,100 @@ export class InMemoryUsersRepository implements UsersRepository {
     return (
       user.userChats?.find((userchats) => userchats.chatId === chatId) ?? null
     )
+  }
+
+  async postUserNotification(
+    userId: string,
+    data: UserNotification,
+  ): Promise<UserNotification> {
+    const userIndex = this.users.findIndex((user) => user.id === userId)
+
+    if (userIndex === -1) {
+      throw new Error('Usuário não encontrado')
+    }
+
+    // Garantir que userNotifications existe
+    if (!this.users[userIndex].userNotifications) {
+      this.users[userIndex].userNotifications = []
+    }
+
+    this.users[userIndex].userNotifications.push(data)
+
+    return Promise.resolve(data)
+  }
+
+  async getUserNotifications(userId: string): Promise<UserNotification[]> {
+    // Localiza o usuário pelo ID
+    const user = this.users.find((user) => user.id === userId)
+
+    // Lança erro caso o usuário não seja encontrado
+    if (!user) {
+      throw new Error('Usuário não encontrado')
+    }
+
+    // Retorna as notificações ou um array vazio caso não existam
+    return user.userNotifications ?? []
+  }
+
+  async getNotSeenUserNotification(
+    userId: string,
+  ): Promise<UserNotification[]> {
+    // Localiza o usuário pelo ID
+    const user = this.users.find((user) => user.id === userId)
+
+    // Lança erro caso o usuário não seja encontrado
+    if (!user) {
+      throw new Error('Usuário não encontrado')
+    }
+
+    // Retorna as notificações ou um array vazio caso não existam
+    return (user.userNotifications ?? []).filter(
+      (notification) => notification.seenAt === undefined,
+    )
+  }
+
+  async getNotificationById(
+    userId: string,
+    notificationId: string,
+  ): Promise<UserNotification | null> {
+    const user = this.users.find((user) => user.id === userId) // Busca o usuário
+    if (!user) {
+      throw new Error('Usuário não encontrado') // Erro se usuário não existir
+    }
+    // Verifica se o usuário possui notificações
+    if (!user.userNotifications) {
+      return null // Retorna null se não houver notificações
+    }
+    // Busca a notificação com o notificationId informado
+    const notification =
+      user.userNotifications.find(
+        (notif) => notif.notificationId === notificationId,
+      ) || null // Retorna null se não encontrar
+    return notification
+  }
+
+  async markNotificationAsSeen(
+    userId: string,
+    notificationId: string,
+    seenAt: Date,
+  ): Promise<UserNotification> {
+    const user = this.users.find((user) => user.id === userId) // Busca o usuário
+    if (!user) {
+      throw new Error('Usuário não encontrado') // Erro se usuário não existir
+    }
+    // Verifica se o usuário possui notificações
+    if (!user.userNotifications) {
+      throw new Error('Notificações do usuário não encontradas') // Erro se não houver notificações
+    }
+    // Procura a notificação pelo notificationId
+    const index = user.userNotifications.findIndex(
+      (notif) => notif.notificationId === notificationId,
+    )
+    if (index === -1) {
+      throw new Error('Notificação não encontrada') // Erro se notificação não existir
+    }
+    // Alterado: atualiza o campo seenAt da notificação encontrada
+    user.userNotifications[index].seenAt = seenAt
+    return user.userNotifications[index]
   }
 }

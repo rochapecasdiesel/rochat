@@ -1,5 +1,3 @@
-import { Timestamp } from 'firebase-admin/firestore'
-
 interface UserChat {
   participantId: string[]
   lastMessage: string
@@ -7,6 +5,19 @@ interface UserChat {
   lastTimestamp: Date
   assignedUser: 'assigned' | 'open'
   id: string
+}
+
+export interface UserNotification {
+  notificationId: string
+  type: 'chat' | 'order' | 'generics'
+  title: string
+  message: string
+  timestamp: Date
+  seenAt?: Date
+  details?: {
+    chatId?: string
+    messageId?: string
+  }
 }
 
 export interface User {
@@ -17,6 +28,7 @@ export interface User {
   updatedAt: Date
   avatarUrl: string
   userChats?: UserChat[]
+  userNotifications?: UserNotification[]
 }
 
 export interface UserCreateInput {
