@@ -16,18 +16,18 @@ export async function userRoutes(app: FastifyInstance) {
   app.get('/', getManyUsersByNameController)
   app.get('/:id', getUserByIdController)
   app.get('/user-chats', getUserChatsController)
-  app.post('/notification/:userId', postUserNotificationController)
-  app.get('/notification/:userId', getUserNotificationsController)
+  app.post('/:userId/notification', postUserNotificationController)
+  app.get('/:userId/notification', getUserNotificationsController)
   app.get(
-    '/notification/:userId/not-seen',
+    '/:userId/notification/not-seen',
     getNotSeenUserNotificationController,
   )
   app.get(
-    '/notification/:userId/:notificationId',
+    '/:userId/notification/:notificationId',
     getNotificationByIdController,
   )
   app.patch(
-    '/notification/:userId/:notificationId/seen',
+    '/:userId/notification/:notificationId/seen',
     markNotificationAsSeenController,
   )
 }
