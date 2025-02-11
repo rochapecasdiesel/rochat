@@ -13,6 +13,7 @@ export interface UserNotification {
   title: string
   message: string
   timestamp: Date
+  createdAt: Date
   seen: boolean
   seenAt?: Date
   details?: {
@@ -44,3 +45,4 @@ export interface UserCreateInput {
 
 export interface UserUpdateInput extends Partial<User> {}
 export interface UserChatUpdate extends Partial<UserChat> {}
+export type UserNotificationCreateInput = Omit<UserNotification, 'createdAt'>

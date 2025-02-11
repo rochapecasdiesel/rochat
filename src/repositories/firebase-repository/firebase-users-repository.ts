@@ -5,6 +5,7 @@ import {
   UserChat,
   UserCreateInput,
   UserNotification,
+  UserNotificationCreateInput,
   UserUpdateInput,
 } from '@/@types/user'
 import { randomUUID } from 'node:crypto'
@@ -257,7 +258,7 @@ export class FirebaseUsersRepository implements UsersRepository {
 
   async postUserNotification(
     userId: string,
-    data: UserNotification,
+    data: UserNotificationCreateInput, // Usa o novo tipo de entrada
   ): Promise<UserNotification> {
     const userDocRef = this.usersCollection.doc(userId)
     const userDoc = await userDocRef.get()
@@ -265,10 +266,11 @@ export class FirebaseUsersRepository implements UsersRepository {
       throw new Error(`User with ID ${userId} does not exist.`)
     }
     const notificationId = data.notificationId || randomUUID()
-    const notificationData = {
+    const notificationData: UserNotification = {
       ...data,
       notificationId,
-      seen: data.seen ?? false, // Garante que 'seen' seja definido (false se não informado)
+      seen: data.seen ?? false, // Garante que 'seen' seja definido
+      createdAt: new Date(), // NOVO: Define o campo createdAt automaticamente
     }
     const userNotificationsCollectionRef =
       userDocRef.collection('userNotifications')

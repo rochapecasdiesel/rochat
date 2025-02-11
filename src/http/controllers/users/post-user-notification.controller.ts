@@ -11,13 +11,16 @@ export async function postUserNotificationController(
     userId: z.string(),
   })
 
-  // Alterado: Adicionada a propriedade 'seen' com valor padrão false
+  // O schema NÃO inclui createdAt, pois ele será definido automaticamente
   const bodySchema = z.object({
     type: z.enum(['chat', 'order', 'generics']),
     title: z.string(),
     message: z.string(),
     timestamp: z.preprocess((arg) => new Date(arg as string), z.date()),
-    seen: z.boolean().default(false), // NOVO: Propriedade seen com default false
+    createdAt: z
+      .preprocess((arg) => new Date(arg as string), z.date())
+      .default(new Date()),
+    seen: z.boolean().default(false),
     seenAt: z.preprocess(
       (arg) => (arg ? new Date(arg as string) : undefined),
       z.date().optional(),
