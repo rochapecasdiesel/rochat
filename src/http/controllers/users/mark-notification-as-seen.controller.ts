@@ -18,6 +18,7 @@ export async function markNotificationAsSeenController(
 
   const { userId, notificationId } = paramsSchema.parse(request.params)
   const { seenAt } = bodySchema.parse(request.body)
+  console.log('merda')
 
   const markNotificationAsSeenService = makeMarkNotificationAsSeenService()
 
