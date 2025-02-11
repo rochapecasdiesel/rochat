@@ -7,18 +7,17 @@ export async function postUserNotificationController(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  // Validação dos parâmetros (rota)
   const paramsSchema = z.object({
     userId: z.string(),
   })
 
-  // Validação do corpo da requisição
+  // Alterado: Adicionada a propriedade 'seen' com valor padrão false
   const bodySchema = z.object({
     type: z.enum(['chat', 'order', 'generics']),
     title: z.string(),
     message: z.string(),
-    // Se o client enviar string, converte para Date
     timestamp: z.preprocess((arg) => new Date(arg as string), z.date()),
+    seen: z.boolean().default(false), // NOVO: Propriedade seen com default false
     seenAt: z.preprocess(
       (arg) => (arg ? new Date(arg as string) : undefined),
       z.date().optional(),
@@ -29,7 +28,7 @@ export async function postUserNotificationController(
         messageId: z.string().optional(),
       })
       .optional(),
-    notificationId: z.string().default(''), // Caso já venha definido
+    notificationId: z.string().default(''),
   })
 
   const { userId } = paramsSchema.parse(request.params)

@@ -13,6 +13,7 @@ export interface UserNotification {
   title: string
   message: string
   timestamp: Date
+  seen: boolean
   seenAt?: Date
   details?: {
     chatId?: string

@@ -259,19 +259,23 @@ export class FirebaseUsersRepository implements UsersRepository {
     userId: string,
     data: UserNotification,
   ): Promise<UserNotification> {
-    const userDocRef = this.usersCollection.doc(userId) // Obtém referência do usuário
-    const userDoc = await userDocRef.get() // Verifica se o usuário existe
+    const userDocRef = this.usersCollection.doc(userId)
+    const userDoc = await userDocRef.get()
     if (!userDoc.exists) {
-      throw new Error(`User with ID ${userId} does not exist.`) // Erro se o usuário não existir
+      throw new Error(`User with ID ${userId} does not exist.`)
     }
-    const notificationId = data.notificationId || randomUUID() // Gera um ID se não estiver presente
-    const userNotificationsCollectionRef =
-      userDocRef.collection('userNotifications') // Acessa a subcoleção de notificações
-    await userNotificationsCollectionRef.doc(notificationId).set({
+    const notificationId = data.notificationId || randomUUID()
+    const notificationData = {
       ...data,
-      notificationId, // Garante que o notificationId seja salvo no documento
-    })
-    return { ...data, notificationId } // Retorna a notificação com o ID definido
+      notificationId,
+      seen: data.seen ?? false, // Garante que 'seen' seja definido (false se não informado)
+    }
+    const userNotificationsCollectionRef =
+      userDocRef.collection('userNotifications')
+    await userNotificationsCollectionRef
+      .doc(notificationId)
+      .set(notificationData)
+    return notificationData
   }
 
   async getUserNotifications(userId: string): Promise<UserNotification[]> {
@@ -293,17 +297,16 @@ export class FirebaseUsersRepository implements UsersRepository {
   async getNotSeenUserNotification(
     userId: string,
   ): Promise<UserNotification[]> {
-    const userDocRef = this.usersCollection.doc(userId) // Referência do usuário
+    const userDocRef = this.usersCollection.doc(userId)
     const userDoc = await userDocRef.get()
     if (!userDoc.exists) {
-      throw new Error(`User with ID ${userId} does not exist.`) // Erro se o usuário não existir
+      throw new Error(`User with ID ${userId} does not exist.`)
     }
     const userNotificationsCollectionRef =
-      userDocRef.collection('userNotifications') // Acessa a subcoleção de notificações
-    // Consulta as notificações onde seenAt é null (ou seja, não foram vistas)
+      userDocRef.collection('userNotifications')
     const querySnapshot = await userNotificationsCollectionRef
-      .where('seenAt', '==', null)
-      .get()
+      .where('seen', '==', false)
+      .get() // Consulta pelo campo 'seen'
     const notifications: UserNotification[] = []
     querySnapshot.forEach((doc) =>
       notifications.push(doc.data() as UserNotification),
@@ -336,21 +339,22 @@ export class FirebaseUsersRepository implements UsersRepository {
     notificationId: string,
     seenAt: Date,
   ): Promise<UserNotification> {
-    const userDocRef = this.usersCollection.doc(userId) // Referência do usuário
+    const userDocRef = this.usersCollection.doc(userId)
     const userDoc = await userDocRef.get()
     if (!userDoc.exists) {
-      throw new Error(`User with ID ${userId} does not exist.`) // Erro se o usuário não existir
+      throw new Error(`User with ID ${userId} does not exist.`)
     }
     const userNotificationsCollectionRef =
-      userDocRef.collection('userNotifications') // Acessa a subcoleção de notificações
+      userDocRef.collection('userNotifications')
     const notificationDocRef =
-      userNotificationsCollectionRef.doc(notificationId) // Referência do documento da notificação
+      userNotificationsCollectionRef.doc(notificationId)
     const notificationDoc = await notificationDocRef.get()
     if (!notificationDoc.exists) {
-      throw new Error(`Notification with ID ${notificationId} does not exist.`) // Erro se a notificação não existir
+      throw new Error(`Notification with ID ${notificationId} does not exist.`)
     }
-    await notificationDocRef.update({ seenAt }) // Atualiza o campo seenAt com a data informada
-    const updatedNotificationDoc = await notificationDocRef.get() // Reconsulta o documento atualizado
+    // Atualiza definindo seen como true e atribuindo seenAt
+    await notificationDocRef.update({ seen: true, seenAt })
+    const updatedNotificationDoc = await notificationDocRef.get()
     return updatedNotificationDoc.data() as UserNotification
   }
 }

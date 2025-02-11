@@ -12,7 +12,6 @@ export async function markNotificationAsSeenController(
     notificationId: z.string(),
   })
 
-  // O corpo da requisição deve conter a data em que a notificação foi vista
   const bodySchema = z.object({
     seenAt: z.preprocess((arg) => new Date(arg as string), z.date()),
   })
