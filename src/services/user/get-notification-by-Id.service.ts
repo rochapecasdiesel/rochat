@@ -1,16 +1,21 @@
 import { UsersRepository } from '@/repositories/users-repository'
 import { UserNotification } from '@/@types/user'
 
-interface GetUserNotificationsServiceResponse {
-  notifications: UserNotification[]
+interface GetNotificationByIdServiceResponse {
+  notification: UserNotification | null
 }
 
-export class GetUserNotificationsService {
+export class GetNotificationByIdService {
   constructor(private usersRepository: UsersRepository) {}
 
-  async execute(userId: string): Promise<GetUserNotificationsServiceResponse> {
-    const notifications =
-      await this.usersRepository.getUserNotifications(userId)
-    return { notifications }
+  async execute(
+    userId: string,
+    notificationId: string,
+  ): Promise<GetNotificationByIdServiceResponse> {
+    const notification = await this.usersRepository.getNotificationById(
+      userId,
+      notificationId,
+    )
+    return { notification }
   }
 }
