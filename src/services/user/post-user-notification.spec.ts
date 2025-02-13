@@ -5,7 +5,7 @@ import { PostUserNotificationService } from './post-user-notification.service'
 import { ResourceNotFoundError } from '../erros/resource-not-found-error'
 import { UserNotification } from '@/@types/user'
 
-describe('PostUserNotificationService', () => {
+describe('Post User Notification Service', () => {
   let userRepository: InMemoryUsersRepository
   let postUserNotificationService: PostUserNotificationService
   const userId = 'user123'
