@@ -36,7 +36,7 @@ describe('GET /notification/:userId/:notificationId', () => {
     }
 
     const response = await request(app.server)
-      .post(`/users/notification/${userId}`)
+      .post(`/users/${userId}/notification`)
       .set('Authorization', `Bearer ${token}`)
       .send(notificationPayload)
 
@@ -50,7 +50,7 @@ describe('GET /notification/:userId/:notificationId', () => {
 
   it('should get a notification by its id', async () => {
     const response = await request(app.server)
-      .get(`/users/notification/${userId}/${notificationId}`)
+      .get(`/users/${userId}/notification/${notificationId}`)
       .set('Authorization', `Bearer ${token}`)
 
     expect(response.statusCode).toBe(200)

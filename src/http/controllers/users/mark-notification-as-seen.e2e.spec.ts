@@ -36,7 +36,7 @@ describe('PATCH /notification/:userId/:notificationId/seen', () => {
     }
 
     const response = await request(app.server)
-      .post(`/users/notification/${userId}`)
+      .post(`/users/${userId}/notification`)
       .set('Authorization', `Bearer ${token}`)
       .send(notificationPayload)
 
@@ -51,7 +51,7 @@ describe('PATCH /notification/:userId/:notificationId/seen', () => {
   it('should mark a notification as seen', async () => {
     const seenAt = new Date().toISOString()
     const response = await request(app.server)
-      .patch(`/users/notification/${userId}/${notificationId}/seen`)
+      .patch(`/users/${userId}/notification/${notificationId}/seen`)
       .set('Authorization', `Bearer ${token}`)
       .send({ seenAt })
 

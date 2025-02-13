@@ -44,7 +44,7 @@ describe('POST /notification/:userId', () => {
     }
 
     const response = await request(app.server)
-      .post(`/users/notification/${userId}`)
+      .post(`/users/${userId}/notification`)
       .set('Authorization', `Bearer ${token}`)
       .send(notificationPayload)
 

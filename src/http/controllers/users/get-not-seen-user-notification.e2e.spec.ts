@@ -35,7 +35,7 @@ describe('GET /notification/:userId/not-seen', () => {
     }
 
     await request(app.server)
-      .post(`/users/notification/${userId}`)
+      .post(`/users/${userId}/notification`)
       .set('Authorization', `Bearer ${token}`)
       .send(notificationPayload)
   })
@@ -47,7 +47,7 @@ describe('GET /notification/:userId/not-seen', () => {
 
   it('should get only not seen notifications for the user', async () => {
     const response = await request(app.server)
-      .get(`/users/notification/${userId}/not-seen`)
+      .get(`/users/${userId}/notification/not-seen`)
       .set('Authorization', `Bearer ${token}`)
 
     expect(response.statusCode).toBe(200)
